@@ -224,6 +224,12 @@ VALID_DOMAINS = [
     "fda_approval",
     "fda_recall",
     "fda_shortage",
+    # Czech healthcare domains
+    "sukl_drug",
+    "mkn_diagnosis",
+    "nrpzs_provider",
+    "szv_procedure",
+    "vzp_reimbursement",
 ]
 VALID_DOMAINS_PLURAL = [
     "articles",
@@ -243,6 +249,12 @@ VALID_DOMAINS_PLURAL = [
     "fda_approvals",
     "fda_recalls",
     "fda_shortages",
+    # Czech healthcare domains
+    "sukl_drugs",
+    "mkn_diagnoses",
+    "nrpzs_providers",
+    "szv_procedures",
+    "vzp_reimbursements",
 ]
 
 # Domain mappings for unified search
@@ -264,6 +276,12 @@ DOMAIN_TO_PLURAL = {
     "fda_approval": "fda_approvals",
     "fda_recall": "fda_recalls",
     "fda_shortage": "fda_shortages",
+    # Czech healthcare domains
+    "sukl_drug": "sukl_drugs",
+    "mkn_diagnosis": "mkn_diagnoses",
+    "nrpzs_provider": "nrpzs_providers",
+    "szv_procedure": "szv_procedures",
+    "vzp_reimbursement": "vzp_reimbursements",
 }
 
 PLURAL_TO_DOMAIN = {
@@ -284,6 +302,12 @@ PLURAL_TO_DOMAIN = {
     "fda_approvals": "fda_approval",
     "fda_recalls": "fda_recall",
     "fda_shortages": "fda_shortage",
+    # Czech healthcare domains
+    "sukl_drugs": "sukl_drug",
+    "mkn_diagnoses": "mkn_diagnosis",
+    "nrpzs_providers": "nrpzs_provider",
+    "szv_procedures": "szv_procedure",
+    "vzp_reimbursements": "vzp_reimbursement",
 }
 
 # Trial detail sections

@@ -150,10 +150,15 @@ async def search(  # noqa: C901
             "fda_approval",
             "fda_recall",
             "fda_shortage",
+            "sukl_drug",
+            "mkn_diagnosis",
+            "nrpzs_provider",
+            "szv_procedure",
+            "vzp_reimbursement",
         ]
         | None,
         Field(
-            description="Domain to search: 'article' for papers/literature ABOUT genes/variants/diseases, 'trial' for clinical studies, 'variant' for genetic variant DATABASE RECORDS, 'gene' for gene information from MyGene.info, 'drug' for drug/chemical information from MyChem.info, 'disease' for disease information from MyDisease.info, 'nci_organization' for NCI cancer centers/sponsors, 'nci_intervention' for NCI drugs/devices/procedures, 'nci_biomarker' for NCI trial eligibility biomarkers, 'nci_disease' for NCI cancer vocabulary, 'fda_adverse' for FDA adverse event reports, 'fda_label' for FDA drug labels, 'fda_device' for FDA device events, 'fda_approval' for FDA drug approvals, 'fda_recall' for FDA drug recalls, 'fda_shortage' for FDA drug shortages"
+            description="Domain to search: 'article' for papers/literature ABOUT genes/variants/diseases, 'trial' for clinical studies, 'variant' for genetic variant DATABASE RECORDS, 'gene' for gene information from MyGene.info, 'drug' for drug/chemical information from MyChem.info, 'disease' for disease information from MyDisease.info, 'nci_organization' for NCI cancer centers/sponsors, 'nci_intervention' for NCI drugs/devices/procedures, 'nci_biomarker' for NCI trial eligibility biomarkers, 'nci_disease' for NCI cancer vocabulary, 'fda_adverse' for FDA adverse event reports, 'fda_label' for FDA drug labels, 'fda_device' for FDA device events, 'fda_approval' for FDA drug approvals, 'fda_recall' for FDA drug recalls, 'fda_shortage' for FDA drug shortages, 'sukl_drug' for Czech SUKL drug registry, 'mkn_diagnosis' for Czech ICD-10 (MKN-10), 'nrpzs_provider' for Czech healthcare providers, 'szv_procedure' for Czech health procedures, 'vzp_reimbursement' for Czech VZP drug reimbursement"
         ),
     ] = None,
     genes: Annotated[list[str] | str | None, "Gene symbols"] = None,
@@ -853,6 +858,50 @@ async def search(  # noqa: C901
         )
         return {"results": [{"content": fda_result}]}
 
+    # Czech healthcare domains
+    elif domain == "sukl_drug":
+        from biomcp.czech.sukl.search import _sukl_drug_search
+
+        query_str = keywords[0] if keywords else query
+        result = await _sukl_drug_search(
+            query_str, page, page_size
+        )
+        return {"results": [{"content": result}]}
+
+    elif domain == "mkn_diagnosis":
+        from biomcp.czech.mkn.search import _mkn_search
+
+        query_str = keywords[0] if keywords else query
+        result = await _mkn_search(query_str, page_size)
+        return {"results": [{"content": result}]}
+
+    elif domain == "nrpzs_provider":
+        from biomcp.czech.nrpzs.search import _nrpzs_search
+
+        query_str = keywords[0] if keywords else query
+        city = None
+        specialty = None
+        result = await _nrpzs_search(
+            query_str, city, specialty, page, page_size
+        )
+        return {"results": [{"content": result}]}
+
+    elif domain == "szv_procedure":
+        from biomcp.czech.szv.search import _szv_search
+
+        query_str = keywords[0] if keywords else query
+        result = await _szv_search(query_str, page_size)
+        return {"results": [{"content": result}]}
+
+    elif domain == "vzp_reimbursement":
+        from biomcp.czech.vzp.drug_reimbursement import (
+            _get_vzp_drug_reimbursement,
+        )
+
+        query_str = keywords[0] if keywords else query
+        result = await _get_vzp_drug_reimbursement(query_str)
+        return {"results": [{"content": result}]}
+
     else:
         raise InvalidDomainError(domain, VALID_DOMAINS)
 
@@ -885,6 +934,11 @@ async def fetch(  # noqa: C901
             "fda_approval",
             "fda_recall",
             "fda_shortage",
+            "sukl_drug",
+            "mkn_diagnosis",
+            "nrpzs_provider",
+            "szv_procedure",
+            "vzp_reimbursement",
         ]
         | None,
         Field(
@@ -1785,6 +1839,75 @@ async def fetch(  # noqa: C901
             "text": result,
             "url": "",
             "metadata": {"drug": id, "domain": "fda_shortage"},
+        }
+
+    # Czech healthcare domains
+    elif domain == "sukl_drug":
+        from biomcp.czech.sukl.getter import _sukl_drug_details
+
+        result = await _sukl_drug_details(id)
+        return {
+            "id": id,
+            "title": f"SUKL Drug - {id}",
+            "text": result,
+            "url": f"https://www.sukl.cz/modules/medication/detail.php?code={id}",
+            "metadata": {"sukl_code": id, "domain": "sukl_drug"},
+        }
+
+    elif domain == "mkn_diagnosis":
+        from biomcp.czech.mkn.search import _mkn_get
+
+        result = await _mkn_get(id)
+        return {
+            "id": id,
+            "title": f"MKN-10 Diagnosis - {id}",
+            "text": result,
+            "url": "",
+            "metadata": {"code": id, "domain": "mkn_diagnosis"},
+        }
+
+    elif domain == "nrpzs_provider":
+        from biomcp.czech.nrpzs.search import _nrpzs_get
+
+        result = await _nrpzs_get(id)
+        return {
+            "id": id,
+            "title": f"NRPZS Provider - {id}",
+            "text": result,
+            "url": "",
+            "metadata": {
+                "provider_id": id,
+                "domain": "nrpzs_provider",
+            },
+        }
+
+    elif domain == "szv_procedure":
+        from biomcp.czech.szv.search import _szv_get
+
+        result = await _szv_get(id)
+        return {
+            "id": id,
+            "title": f"SZV Procedure - {id}",
+            "text": result,
+            "url": "",
+            "metadata": {"code": id, "domain": "szv_procedure"},
+        }
+
+    elif domain == "vzp_reimbursement":
+        from biomcp.czech.vzp.drug_reimbursement import (
+            _get_vzp_drug_reimbursement,
+        )
+
+        result = await _get_vzp_drug_reimbursement(id)
+        return {
+            "id": id,
+            "title": f"VZP Reimbursement - {id}",
+            "text": result,
+            "url": "",
+            "metadata": {
+                "sukl_code": id,
+                "domain": "vzp_reimbursement",
+            },
         }
 
     # Invalid domain
