@@ -2,7 +2,7 @@
 
 > **Komplexni technicka reference pro ceske zdravotnicke rozsireni MCP**
 >
-> Verze 1.0 | Unor 2026 | Vetev `python-main`
+> Verze 1.0 | Unor 2026 | Vetev `001-czech-health-sources`
 
 ---
 
@@ -29,7 +29,7 @@
 
 **CzechMedMCP** je rozsireni projektu [BioMCP](https://github.com/genomoncology/biomcp) -- biomedicalniho serveru postaveneho na protokolu Model Context Protocol (MCP). Pridava **14 specializovanych nastroju** pro dotazovani ceskych zdravotnickych datovych zdroju. Rozsireni integruje pet autoritativnich ceskych registru -- SUKL (leky), MKN-10 (diagnozy), NRPZS (poskytovatele), SZV (vykony) a VZP (ciselniky) -- do jedineho MCP serveru, ktery muze vyuzit libovolny MCP-kompatibilni AI klient (Claude, GPT nebo vlastni agenti).
 
-Ceske nastroje jsou organizovany do peti domenovych podbalicku v adresari `src/biomcp/czech/`, pricemz kazdy dodrzuje konzistentni trislozkovou architekturu: **modely** (Pydantic v2 schemata), **vyhledavani/getter** (servisni logika s cachovanim) a **registrace nastroju** (definice MCP koncovych bodu). Vsech 23 nastroju se automaticky registruje na serveru FastMCP pri importu a koexistuje s existujicimi globalni nastroji BioMCP (clanky, studie, varianty, geny, leky, nemoci atd.).
+Ceske nastroje jsou organizovany do peti domenovych podbalicku v adresari `src/biomcp/czech/`, pricemz kazdy dodrzuje konzistentni trislozkovou architekturu: **modely** (Pydantic v2 schemata), **vyhledavani/getter** (servisni logika s cachovanim) a **registrace nastroju** (definice MCP koncovych bodu). Vsech 14 nastroju se automaticky registruje na serveru FastMCP pri importu a koexistuje s existujicimi globalni nastroji BioMCP (clanky, studie, varianty, geny, leky, nemoci atd.).
 
 **Klicova navrhova rozhodnuti:**
 
@@ -177,7 +177,7 @@ graph LR
 
     subgraph "biomcp.czech"
         czech_init["czech/__init__.py<br/>importuje czech_tools"]
-        czech_tools["czech/czech_tools.py<br/>23 @mcp_app.tool() definic"]
+        czech_tools["czech/czech_tools.py<br/>14 @mcp_app.tool() definic"]
         diacritics["czech/diacritics.py<br/>strip_diacritics()"]
     end
 
@@ -265,7 +265,7 @@ src/biomcp/
 
     czech/
         __init__.py          # Importuje czech_tools pro spusteni automaticke registrace
-        czech_tools.py       # 23 definic funkci @mcp_app.tool()
+        czech_tools.py       # 14 definic funkci @mcp_app.tool()
         diacritics.py        # strip_diacritics(), normalize_query()
 
         sukl/                # Registr lecivych pripravku SUKL (Statni ustav pro kontrolu leciv)
@@ -327,7 +327,7 @@ tests/
 
 **Jeden podbalicek na datovou domenu.** Kazdy cesky zdravotnicky datovy zdroj ma zasadne odlisne datove modely, tvary API a pozadavky na cachovani. Udrzovani v samostatnych podbalickach zajistuje jasne hranice a umoznuje nezavisly vyvoj a testovani.
 
-**Centralizovana registrace nastroju.** Vsech 23 MCP nastroju je definovano v jedinem souboru (`czech_tools.py`) namisto rozptyleni po podbalickach. To poskytuje jediny referencni bod pro porozumeni celemu povrchu ceskych nastroju, usnadnuje audit nazvu nastroju a schemat parametru a zajistuje konzistentni vzor vrstveni `@mcp_app.tool()` + `@track_performance()`.
+**Centralizovana registrace nastroju.** Vsech 14 MCP nastroju je definovano v jedinem souboru (`czech_tools.py`) namisto rozptyleni po podbalickach. To poskytuje jediny referencni bod pro porozumeni celemu povrchu ceskych nastroju, usnadnuje audit nazvu nastroju a schemat parametru a zajistuje konzistentni vzor vrstveni `@mcp_app.tool()` + `@track_performance()`.
 
 **Oddeleni zodpovednosti.** Kazdy modul dodrzuje vzor tri souboru:
 
@@ -570,7 +570,7 @@ Oba indexy jsou serializovany do JSON a cachovany v `diskcache` (TTL: 30 dni) s 
 
 ---
 
-## 7. Inventar nastroju (23 MCP nastroju)
+## 7. Inventar nastroju (14 MCP nastroju)
 
 Vsechny nastroje jsou definovany v `src/biomcp/czech/czech_tools.py` a organizovany do ctyr uzivatelsych pribehu (US1-US4).
 
@@ -880,7 +880,7 @@ biomcp/__init__.py
         --> czech/__init__.py
             --> import czech_tools      # Radek: from . import czech_tools
                 --> czech_tools.py se spusti
-                    --> dekoratory @mcp_app.tool() zaregistruji 23 nastroju
+                    --> dekoratory @mcp_app.tool() zaregistruji 14 nastroju
 ```
 
 To znamena, ze jakmile je balicek `biomcp` naimportovan (coz nastava pri startu serveru), vsechny ceske nastroje jsou automaticky zaregistrovany u instance FastMCP.
@@ -942,8 +942,8 @@ EXPECTED_CZECH_TOOLS = [
 ```
 
 Test potvrzuje:
-- Vsech 23 nastroju je zaregistrovano podle nazvu.
-- Presne 23 nastroju ma cesky prefixovane nazvy.
+- Vsech 14 nastroju je zaregistrovano podle nazvu.
+- Presne 14 nastroju ma cesky prefixovane nazvy.
 - Globalni nastroje BioMCP stale koexistuji (celkovy pocet nastroju > 14).
 
 ---
@@ -1133,7 +1133,7 @@ Testy se nachazi v `tests/czech/` (jednotkove testy) a `tests/czech_integration/
 | `test_szv_getter.py` | Detail vykonu s logiku nahradniho vyhledavani |
 | `test_vzp_search.py` | Vyhledavani v ciselnicich napric vice typy |
 | `test_vzp_getter.py` | Ziskani polozky ciselniku s nahradnim vyhledavanim |
-| `test_tool_registration.py` | Vsech 23 nastroju zaregistrovano, koexistence s globalnimi nastroji |
+| `test_tool_registration.py` | Vsech 14 nastroju zaregistrovano, koexistence s globalnimi nastroji |
 | `test_no_regression.py` | Existujici funkcionalita BioMCP neovlivnena |
 | `test_performance.py` | Zaznam vykonnostnich metrik |
 
@@ -1359,7 +1359,7 @@ Zavislost `lxml` byla pridana specificky pro CzechMedMCP kvuli parsovani formatu
 | Soubor | Absolutni cesta | Ucel |
 |--------|----------------|------|
 | Init ceskeho balicku | `src/biomcp/czech/__init__.py` | Spousti automatickou registraci importem czech_tools |
-| Definice nastroju | `src/biomcp/czech/czech_tools.py` | Vsech 23 definic funkci MCP nastroju |
+| Definice nastroju | `src/biomcp/czech/czech_tools.py` | Vsech 14 definic funkci MCP nastroju |
 | Utilita pro diakritiku | `src/biomcp/czech/diacritics.py` | Unicode NFD normalizace pro cesky text |
 | Modely SUKL | `src/biomcp/czech/sukl/models.py` | Drug, DrugSummary, DrugSearchResult, ActiveSubstance, AvailabilityStatus |
 | Vyhledavani SUKL | `src/biomcp/czech/sukl/search.py` | Vyhledavani leku (vzor seznam a filtrace) |
@@ -1379,7 +1379,7 @@ Zavislost `lxml` byla pridana specificky pro CzechMedMCP kvuli parsovani formatu
 | HTTP/Cache | `src/biomcp/http_client.py` | Helpery pro diskcache (get/set/generate_cache_key) |
 | Metriky | `src/biomcp/metrics.py` | Dekorator @track_performance |
 | Testovaci fixtury | `tests/czech/conftest.py` | Sdilene fixtury, vzorova data, SAMPLE_CLAML_XML |
-| Testy registrace | `tests/czech/test_tool_registration.py` | Overeni registrace vsech 23 nastroju |
+| Testy registrace | `tests/czech/test_tool_registration.py` | Overeni registrace vsech 14 nastroju |
 
 ---
 

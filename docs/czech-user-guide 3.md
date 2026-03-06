@@ -5,9 +5,9 @@ CzechMedMCP platformy BioMCP.
 
 ---
 
-**Co se naučíte:** Jak nainstalovat, nakonfigurovat a používat všech 23 českých
+**Co se naučíte:** Jak nainstalovat, nakonfigurovat a používat všech 14 českých
 zdravotnických MCP nástrojů pro vyhledávání léků, kódování diagnóz, hledání
-poskytovatelů, vyhledávání výkonů, úhrady léčiv a workflow orchestrace.
+poskytovatelů, vyhledávání výkonů a dotazy na číselníky pojišťoven.
 
 **Předpoklady:** Python 3.10 nebo novější, základní znalost práce s příkazovou
 řádkou.
@@ -43,7 +43,7 @@ a VZP.
 ### Co je CzechMedMCP
 
 CzechMedMCP je fork projektu [BioMCP](https://github.com/genomoncology/biomcp)
-(licence MIT), který přidává **23 českých zdravotnických MCP nástrojů**
+(licence MIT), který přidává **14 českých zdravotnických MCP nástrojů**
 k existující sadě 37 globálních biomedicínských nástrojů.
 Zpřístupňuje české státní zdravotnické datové zdroje prostřednictvím
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/), takže
@@ -140,7 +140,7 @@ biomcp run
 biomcp run --mode streamable_http --port 8080
 ```
 
-Po spuštění server zaregistruje **60 nástrojů**: 33 individuálních + 23 českých + 2 routerové + 1 thinking + 1 metriky.
+Po spuštění server zaregistruje **51 nástrojů**: 33 individuálních + 14 českých + 2 routerové + 1 thinking + 1 metriky.
 
 ### 3.2 Konfigurace Claude Desktop
 
@@ -1318,7 +1318,7 @@ registrace.
 
 ---
 
-*Tato příručka pokrývá CzechMedMCP v0.7.3, založený na BioMCP s 23 českými
+*Tato příručka pokrývá CzechMedMCP v0.4.6, založený na BioMCP se 14 českými
 zdravotnickými MCP nástroji v 5 modulech. Pro globální nástroje BioMCP
 (články, studie, varianty, geny atd.) viz
 [hlavní dokumentaci BioMCP](index.md).*
