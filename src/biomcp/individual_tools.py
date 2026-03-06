@@ -4,6 +4,7 @@ This module provides the original 9 individual tools that offer direct access
 to specific search and fetch functionality, complementing the unified tools.
 """
 
+import asyncio
 import logging
 from typing import Annotated, Literal
 
@@ -15,6 +16,7 @@ from biomcp.cbioportal_helper import (
     get_cbioportal_summary_for_genes,
     get_variant_cbioportal_summary,
 )
+from biomcp.constants import compute_skip
 from biomcp.core import ensure_list, mcp_app
 from biomcp.diseases.getter import _disease_details
 from biomcp.drugs.getter import _drug_details
@@ -33,6 +35,28 @@ from biomcp.variants.getter import _variant_details
 from biomcp.variants.search import _variant_searcher
 
 logger = logging.getLogger(__name__)
+
+
+def _handle_cts_bucket_error(
+    error: Exception, suggestions: str
+) -> str | None:
+    """Handle NCI CTS API bucket limit errors.
+
+    Returns a user-friendly message if the error is a bucket
+    limit error, otherwise returns None to allow re-raising.
+    """
+    error_msg = str(error)
+    if (
+        "too_many_buckets_exception" in error_msg
+        or "75000" in error_msg
+    ):
+        return (
+            "\u26a0\ufe0f **Search Too Broad**\n\n"
+            "The NCI API cannot process this search "
+            "because it returns too many results.\n\n"
+            f"{suggestions}"
+        )
+    return None
 
 
 # Article Tools
@@ -320,37 +344,15 @@ async def trial_getter(
     - trial_outcomes_getter: Primary/secondary outcomes and results
     - trial_references_getter: Publications and references
     """
-    results = []
-
-    # Get all sections
-    protocol = await _trial_protocol(
-        call_benefit="Fetch comprehensive trial details for analysis",
-        nct_id=nct_id,
+    benefit = "Fetch comprehensive trial details for analysis"
+    protocol, locations, outcomes, references = await asyncio.gather(
+        _trial_protocol(call_benefit=benefit, nct_id=nct_id),
+        _trial_locations(call_benefit=benefit, nct_id=nct_id),
+        _trial_outcomes(call_benefit=benefit, nct_id=nct_id),
+        _trial_references(call_benefit=benefit, nct_id=nct_id),
     )
-    if protocol:
-        results.append(protocol)
 
-    locations = await _trial_locations(
-        call_benefit="Fetch comprehensive trial details for analysis",
-        nct_id=nct_id,
-    )
-    if locations:
-        results.append(locations)
-
-    outcomes = await _trial_outcomes(
-        call_benefit="Fetch comprehensive trial details for analysis",
-        nct_id=nct_id,
-    )
-    if outcomes:
-        results.append(outcomes)
-
-    references = await _trial_references(
-        call_benefit="Fetch comprehensive trial details for analysis",
-        nct_id=nct_id,
-    )
-    if references:
-        results.append(references)
-
+    results = [r for r in [protocol, locations, outcomes, references] if r]
     return (
         "\n\n".join(results)
         if results
@@ -553,11 +555,23 @@ async def variant_searcher(
 
     Search by various identifiers or filter by clinical/functional criteria.
     """
+    # Map generic hgvs to hgvsp/hgvsc based on notation format
+    effective_hgvsp = hgvsp
+    effective_hgvsc = hgvsc
+    if hgvs:
+        if hgvs.startswith("p.") or "p." in hgvs:
+            effective_hgvsp = effective_hgvsp or hgvs
+        elif hgvs.startswith("c.") or "c." in hgvs:
+            effective_hgvsc = effective_hgvsc or hgvs
+        else:
+            # Genomic HGVS — use as rsid-style direct query
+            rsid = rsid or hgvs
+
     result = await _variant_searcher(
         call_benefit="Direct variant database search for genetic analysis",
         gene=gene,
-        hgvsp=hgvsp,
-        hgvsc=hgvsc,
+        hgvsp=effective_hgvsp,
+        hgvsc=effective_hgvsc,
         rsid=rsid,
         region=region,
         significance=significance,
@@ -567,20 +581,24 @@ async def variant_searcher(
         sift=sift_prediction,
         polyphen=polyphen_prediction,
         size=page_size,
-        offset=(page - 1) * page_size if page > 1 else 0,
+        offset=compute_skip(page, page_size) if page > 1 else 0,
     )
 
-    # Add cBioPortal summary if searching by gene
-    if include_cbioportal and gene:
-        cbioportal_summary = await get_variant_cbioportal_summary(gene)
-        if cbioportal_summary:
-            result = cbioportal_summary + "\n\n" + result
+    # Fetch cBioPortal + OncoKB summaries in parallel
+    if gene and (include_cbioportal or include_oncokb):
+        tasks = {}
+        if include_cbioportal:
+            tasks["cbio"] = get_variant_cbioportal_summary(gene)
+        if include_oncokb:
+            tasks["oncokb"] = get_oncokb_summary_for_genes([gene])
 
-    # Add OncoKB summary if searching by gene
-    if include_oncokb and gene:
-        oncokb_summary = await get_oncokb_summary_for_genes([gene])
-        if oncokb_summary:
-            result = oncokb_summary + "\n\n" + result
+        summaries = await asyncio.gather(*tasks.values())
+        summary_map = dict(zip(tasks.keys(), summaries, strict=False))
+
+        if cbio := summary_map.get("cbio"):
+            result = cbio + "\n\n" + result
+        if oncokb := summary_map.get("oncokb"):
+            result = oncokb + "\n\n" + result
 
     return result
 
@@ -1026,22 +1044,20 @@ async def nci_organization_searcher(
         )
         return format_organization_results(results)
     except CTSAPIError as e:
-        # Check for Elasticsearch bucket limit error
-        error_msg = str(e)
-        if "too_many_buckets_exception" in error_msg or "75000" in error_msg:
-            return (
-                "⚠️ **Search Too Broad**\n\n"
-                "The NCI API cannot process this search because it returns too many results.\n\n"
-                "**To fix this, try:**\n"
-                "1. **Always use city AND state together** for location searches\n"
-                "2. Add an organization name (even partial) to narrow results\n"
-                "3. Use multiple filters together (name + location, or name + type)\n\n"
-                "**Examples that work:**\n"
-                "- `nci_organization_searcher(city='Cleveland', state='OH')`\n"
-                "- `nci_organization_searcher(name='Cleveland Clinic')`\n"
-                "- `nci_organization_searcher(name='cancer', city='Boston', state='MA')`\n"
-                "- `nci_organization_searcher(organization_type='Academic', city='Houston', state='TX')`"
-            )
+        msg = _handle_cts_bucket_error(
+            e,
+            "**To fix this, try:**\n"
+            "1. **Always use city AND state together** for location searches\n"
+            "2. Add an organization name (even partial) to narrow results\n"
+            "3. Use multiple filters together (name + location, or name + type)\n\n"
+            "**Examples that work:**\n"
+            "- `nci_organization_searcher(city='Cleveland', state='OH')`\n"
+            "- `nci_organization_searcher(name='Cleveland Clinic')`\n"
+            "- `nci_organization_searcher(name='cancer', city='Boston', state='MA')`\n"
+            "- `nci_organization_searcher(organization_type='Academic', city='Houston', state='TX')`",
+        )
+        if msg:
+            return msg
         raise
 
 
@@ -1158,21 +1174,19 @@ async def nci_intervention_searcher(
         )
         return format_intervention_results(results)
     except CTSAPIError as e:
-        # Check for Elasticsearch bucket limit error
-        error_msg = str(e)
-        if "too_many_buckets_exception" in error_msg or "75000" in error_msg:
-            return (
-                "⚠️ **Search Too Broad**\n\n"
-                "The NCI API cannot process this search because it returns too many results.\n\n"
-                "**Try adding more specific filters:**\n"
-                "- Add an intervention name (even partial)\n"
-                "- Specify an intervention type (e.g., 'Drug', 'Device')\n"
-                "- Search for a specific drug or therapy name\n\n"
-                "**Example searches that work better:**\n"
-                "- Search for 'pembrolizumab' instead of all drugs\n"
-                "- Search for 'CAR-T' to find CAR-T cell therapies\n"
-                "- Filter by type: Drug, Device, Procedure, etc."
-            )
+        msg = _handle_cts_bucket_error(
+            e,
+            "**Try adding more specific filters:**\n"
+            "- Add an intervention name (even partial)\n"
+            "- Specify an intervention type (e.g., 'Drug', 'Device')\n"
+            "- Search for a specific drug or therapy name\n\n"
+            "**Example searches that work better:**\n"
+            "- Search for 'pembrolizumab' instead of all drugs\n"
+            "- Search for 'CAR-T' to find CAR-T cell therapies\n"
+            "- Filter by type: Drug, Device, Procedure, etc.",
+        )
+        if msg:
+            return msg
         raise
 
 
@@ -1284,21 +1298,19 @@ async def nci_biomarker_searcher(
         )
         return format_biomarker_results(results)
     except CTSAPIError as e:
-        # Check for Elasticsearch bucket limit error
-        error_msg = str(e)
-        if "too_many_buckets_exception" in error_msg or "75000" in error_msg:
-            return (
-                "⚠️ **Search Too Broad**\n\n"
-                "The NCI API cannot process this search because it returns too many results.\n\n"
-                "**Try adding more specific filters:**\n"
-                "- Add a biomarker name (even partial)\n"
-                "- Specify a gene symbol\n"
-                "- Add an assay type (e.g., 'IHC', 'NGS')\n\n"
-                "**Example searches that work:**\n"
-                "- `nci_biomarker_searcher(name='PD-L1')`\n"
-                "- `nci_biomarker_searcher(gene='EGFR', biomarker_type='mutation')`\n"
-                "- `nci_biomarker_searcher(assay_type='IHC')`"
-            )
+        msg = _handle_cts_bucket_error(
+            e,
+            "**Try adding more specific filters:**\n"
+            "- Add a biomarker name (even partial)\n"
+            "- Specify a gene symbol\n"
+            "- Add an assay type (e.g., 'IHC', 'NGS')\n\n"
+            "**Example searches that work:**\n"
+            "- `nci_biomarker_searcher(name='PD-L1')`\n"
+            "- `nci_biomarker_searcher(gene='EGFR', biomarker_type='mutation')`\n"
+            "- `nci_biomarker_searcher(assay_type='IHC')`",
+        )
+        if msg:
+            return msg
         raise
 
 
@@ -1371,21 +1383,19 @@ async def nci_disease_searcher(
         )
         return format_disease_results(results)
     except CTSAPIError as e:
-        # Check for Elasticsearch bucket limit error
-        error_msg = str(e)
-        if "too_many_buckets_exception" in error_msg or "75000" in error_msg:
-            return (
-                "⚠️ **Search Too Broad**\n\n"
-                "The NCI API cannot process this search because it returns too many results.\n\n"
-                "**Try adding more specific filters:**\n"
-                "- Add a disease name (even partial)\n"
-                "- Specify a disease category\n"
-                "- Use more specific search terms\n\n"
-                "**Example searches that work:**\n"
-                "- `nci_disease_searcher(name='melanoma')`\n"
-                "- `nci_disease_searcher(name='lung', category='maintype')`\n"
-                "- `nci_disease_searcher(name='NSCLC')`"
-            )
+        msg = _handle_cts_bucket_error(
+            e,
+            "**Try adding more specific filters:**\n"
+            "- Add a disease name (even partial)\n"
+            "- Specify a disease category\n"
+            "- Use more specific search terms\n\n"
+            "**Example searches that work:**\n"
+            "- `nci_disease_searcher(name='melanoma')`\n"
+            "- `nci_disease_searcher(name='lung', category='maintype')`\n"
+            "- `nci_disease_searcher(name='NSCLC')`",
+        )
+        if msg:
+            return msg
         raise
 
 
@@ -1434,7 +1444,7 @@ async def openfda_adverse_searcher(
     """
     from biomcp.openfda import search_adverse_events
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_adverse_events(
         drug=drug,
         reaction=reaction,
@@ -1525,7 +1535,7 @@ async def openfda_label_searcher(
     """
     from biomcp.openfda import search_drug_labels
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_drug_labels(
         name=name,
         indication=indication,
@@ -1625,7 +1635,7 @@ async def openfda_device_searcher(
     """
     from biomcp.openfda import search_device_events
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_device_events(
         device=device,
         manufacturer=manufacturer,
@@ -1711,7 +1721,7 @@ async def openfda_approval_searcher(
     """
     from biomcp.openfda import search_drug_approvals
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_drug_approvals(
         drug=drug,
         application_number=application_number,
@@ -1808,7 +1818,7 @@ async def openfda_recall_searcher(
     """
     from biomcp.openfda import search_drug_recalls
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_drug_recalls(
         drug=drug,
         recall_class=recall_class,
@@ -1899,7 +1909,7 @@ async def openfda_shortage_searcher(
     """
     from biomcp.openfda import search_drug_shortages
 
-    skip = (page - 1) * limit
+    skip = compute_skip(page, limit)
     return await search_drug_shortages(
         drug=drug,
         status=status,

@@ -1,10 +1,12 @@
 import csv
+import hashlib
 import json
 import os
 import ssl
 from io import StringIO
 from ssl import PROTOCOL_TLS_CLIENT, SSLContext, TLSVersion
 from typing import Literal, TypeVar
+from urllib.parse import urlparse
 
 import certifi
 from diskcache import Cache
@@ -34,6 +36,13 @@ from .utils.endpoint_registry import get_registry
 
 T = TypeVar("T", bound=BaseModel)
 
+_DEFAULT_BREAKER_CONFIG = CircuitBreakerConfig(
+    failure_threshold=DEFAULT_FAILURE_THRESHOLD,
+    recovery_timeout=DEFAULT_RECOVERY_TIMEOUT,
+    success_threshold=DEFAULT_SUCCESS_THRESHOLD,
+    expected_exception=(ConnectionError, TimeoutError),
+)
+
 
 class RequestError(BaseModel):
     code: int
@@ -52,20 +61,17 @@ def get_cache() -> Cache:
 
 
 def generate_cache_key(method: str, url: str, params: dict) -> str:
-    """Generate cache key using Python's built-in hash function for speed."""
-    # Handle simple cases without params
+    """Generate a deterministic cache key using hashlib."""
     if not params:
         return f"{method.upper()}:{url}"
 
-    # Use Python's built-in hash with a fixed seed for consistency
-    # This is much faster than SHA256 for cache keys
     params_str = json.dumps(params, sort_keys=True, separators=(",", ":"))
     key_source = f"{method.upper()}:{url}:{params_str}"
 
-    # Use Python's hash function with a fixed seed for deterministic results
-    # Convert to positive hex string for compatibility
-    hash_value = hash(key_source)
-    return f"{hash_value & 0xFFFFFFFFFFFFFFFF:016x}"
+    hash_value = hashlib.md5(  # noqa: S324
+        key_source.encode()
+    ).hexdigest()
+    return hash_value
 
 
 def cache_response(cache_key: str, content: str, ttl: int):
@@ -110,21 +116,10 @@ async def call_http(
     """
 
     async def _make_request() -> tuple[int, str]:
-        # Extract domain from URL for metrics tagging
-        from urllib.parse import urlparse
-
         parsed = urlparse(url)
         host = parsed.hostname or "unknown"
 
-        # Apply circuit breaker for the host
-        breaker_config = CircuitBreakerConfig(
-            failure_threshold=DEFAULT_FAILURE_THRESHOLD,
-            recovery_timeout=DEFAULT_RECOVERY_TIMEOUT,
-            success_threshold=DEFAULT_SUCCESS_THRESHOLD,
-            expected_exception=(ConnectionError, TimeoutError),
-        )
-
-        @circuit_breaker(f"http_{host}", breaker_config)
+        @circuit_breaker(f"http_{host}", _DEFAULT_BREAKER_CONFIG)
         async def _execute_with_breaker():
             async with Timer(
                 "http_request", tags={"method": method, "host": host}
@@ -256,18 +251,36 @@ async def request_api(
     # Validate endpoint
     _validate_endpoint(endpoint_key)
 
-    # Apply rate limiting if domain is specified
-    if domain:
-        async with domain_limiter.limit(domain):
-            pass  # Rate limit acquired
-
     # Prepare request
     verify = get_ssl_context(tls_version) if tls_version else True
     params, headers = _prepare_request_params(request)
     retry_config = _get_retry_config(enable_retry, domain)
 
-    # Short-circuit if caching disabled
-    if cache_ttl == 0:
+    async def _execute_request():
+        # Short-circuit if caching disabled
+        if cache_ttl == 0:
+            status, content = await call_http(
+                method,
+                url,
+                params,
+                verify=verify,
+                retry_config=retry_config,
+                headers=headers,
+            )
+            return parse_response(
+                status, content, response_model_type
+            )
+
+        # Handle caching
+        cache_key = generate_cache_key(method, url, params)
+        cached_content = get_cached_response(cache_key)
+
+        if cached_content:
+            return parse_response(
+                200, cached_content, response_model_type
+            )
+
+        # Make HTTP request if not cached
         status, content = await call_http(
             method,
             url,
@@ -276,31 +289,22 @@ async def request_api(
             retry_config=retry_config,
             headers=headers,
         )
-        return parse_response(status, content, response_model_type)
+        parsed_response = parse_response(
+            status, content, response_model_type
+        )
 
-    # Handle caching
-    cache_key = generate_cache_key(method, url, params)
-    cached_content = get_cached_response(cache_key)
+        # Cache if successful response
+        if status == 200:
+            cache_response(cache_key, content, cache_ttl)
 
-    if cached_content:
-        return parse_response(200, cached_content, response_model_type)
+        return parsed_response
 
-    # Make HTTP request if not cached
-    status, content = await call_http(
-        method,
-        url,
-        params,
-        verify=verify,
-        retry_config=retry_config,
-        headers=headers,
-    )
-    parsed_response = parse_response(status, content, response_model_type)
+    # Apply rate limiting if domain is specified
+    if domain:
+        async with domain_limiter.limit(domain):
+            return await _execute_request()
 
-    # Cache if successful response
-    if status == 200:
-        cache_response(cache_key, content, cache_ttl)
-
-    return parsed_response
+    return await _execute_request()
 
 
 def parse_response(

@@ -17,8 +17,8 @@ class TestMCPIntegration:
         # Get the registered tools
         tools = await mcp_app.list_tools()
 
-        # Should have 36 tools (2 unified + 1 think + 33 individual including OpenFDA and Enrichr)
-        assert len(tools) == 36
+        # Should have 60 tools (2 unified + 1 think + 1 metrics + 33 individual including OpenFDA and Enrichr + 23 Czech)
+        assert len(tools) == 60
 
         # Check tool names
         tool_names = [tool.name for tool in tools]
@@ -41,6 +41,8 @@ class TestMCPIntegration:
         assert "gene_getter" in tool_names
         assert "drug_getter" in tool_names
         assert "disease_getter" in tool_names
+        # Metrics tool
+        assert "get_performance_metrics" in tool_names
         # OpenFDA tools
         assert "openfda_adverse_searcher" in tool_names
         assert "openfda_adverse_getter" in tool_names
@@ -54,6 +56,30 @@ class TestMCPIntegration:
         assert "openfda_recall_getter" in tool_names
         assert "openfda_shortage_searcher" in tool_names
         assert "openfda_shortage_getter" in tool_names
+        # Czech healthcare tools (czechmed_ prefix per FR-024)
+        assert "czechmed_search_drug" in tool_names
+        assert "czechmed_get_drug_detail" in tool_names
+        assert "czechmed_get_spc" in tool_names
+        assert "czechmed_get_pil" in tool_names
+        assert "czechmed_check_availability" in tool_names
+        assert "czechmed_search_diagnosis" in tool_names
+        assert "czechmed_get_diagnosis_detail" in tool_names
+        assert "czechmed_browse_classification" in tool_names
+        assert "czechmed_search_provider" in tool_names
+        assert "czechmed_get_provider_detail" in tool_names
+        assert "czechmed_search_procedure" in tool_names
+        assert "czechmed_get_procedure_detail" in tool_names
+        assert "czechmed_get_vzp_reimbursement" in tool_names
+        assert "czechmed_compare_alternatives" in tool_names
+        assert "czechmed_get_reimbursement" in tool_names
+        assert "czechmed_batch_check_availability" in tool_names
+        assert "czechmed_get_diagnosis_stats" in tool_names
+        assert "czechmed_diagnosis_assistant" in tool_names
+        assert "czechmed_calculate_reimbursement" in tool_names
+        assert "czechmed_get_codebooks" in tool_names
+        assert "czechmed_referral_assistant" in tool_names
+        assert "czechmed_drug_profile" in tool_names
+        assert "czechmed_find_pharmacies" in tool_names
 
     async def test_mcp_search_tool_schema(self):
         """Test the search tool schema."""

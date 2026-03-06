@@ -14,7 +14,6 @@ including API URLs, default values, limits, and domain configurations.
 PUBTATOR3_BASE_URL = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api"
 PUBTATOR3_SEARCH_URL = f"{PUBTATOR3_BASE_URL}/search/"
 PUBTATOR3_FULLTEXT_URL = f"{PUBTATOR3_BASE_URL}/publications/export/biocjson"
-PUBTATOR3_AUTOCOMPLETE_URL = f"{PUBTATOR3_BASE_URL}/entity/autocomplete/"
 
 # ClinicalTrials.gov API
 # https://clinicaltrials.gov/data-api/api
@@ -43,12 +42,57 @@ MEDRXIV_BASE_URL = "https://api.biorxiv.org/details/medrxiv"
 EUROPE_PMC_BASE_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 
 # External Variant APIs
-GDC_BASE_URL = "https://api.gdc.cancer.gov"
-GDC_SSMS_ENDPOINT_URL = f"{GDC_BASE_URL}/ssms"  # Simple Somatic Mutations
-GDC_SSM_OCCURRENCES_URL = f"{GDC_BASE_URL}/ssm_occurrences"
-ENSEMBL_REST_BASE_URL = "https://rest.ensembl.org"
-ENSEMBL_VARIATION_URL = f"{ENSEMBL_REST_BASE_URL}/variation/human"
 CBIOPORTAL_BASE_URL = "https://www.cbioportal.org/api"
+
+# Czech Healthcare APIs
+SUKL_BASE_URL = "https://prehledy.sukl.cz"
+SUKL_API_URL = f"{SUKL_BASE_URL}/dlp/api"
+NRPZS_BASE_URL = "https://nrpzs.uzis.cz/api/v1"
+NRPZS_PROVIDERS_URL = f"{NRPZS_BASE_URL}/mista-poskytovani"
+SZV_BASE_URL = "https://szv.mzcr.cz"
+NZIP_BASE_URL = "https://nzip.cz"
+VZP_BASE_URL = "https://www.vzp.cz"
+MKN10_BROWSER_URL = "https://mkn10.uzis.cz"
+CZECH_HTTP_TIMEOUT = 30.0  # Default timeout for Czech API calls
+
+# Czech Healthcare APIs — Extensions (CzechMedMCP)
+SUKL_OPENDATA_BASE = "https://opendata.sukl.cz/api/v1"
+SUKL_REIMBURSEMENT_URL = f"{SUKL_OPENDATA_BASE}/uhrada"
+SUKL_PHARMACY_URL = f"{SUKL_OPENDATA_BASE}/lecebna-zarizeni"
+NZIP_STATS_URL = (
+    "https://reporting.uzis.cz/cr/index.php"
+    "?pg=statisticke-vystupy--mzdy-a-platy"
+)
+NZIP_CSV_BASE_URL = "https://reporting.uzis.cz/cr/data"
+
+# Insurance rate table (CZK per point, by insurer code)
+INSURANCE_RATE_TABLE: dict[str, float] = {
+    "111": 1.15,  # VZP
+    "201": 1.10,  # VoZP
+    "205": 1.12,  # ČPZP
+    "207": 1.11,  # OZP
+    "209": 1.09,  # ZPŠ
+    "211": 1.13,  # ZPMV
+    "213": 1.08,  # RBP
+}
+
+# Diagnosis chapter → recommended specialty mapping
+DIAGNOSIS_SPECIALTY_MAP: dict[str, str] = {
+    "I": "kardiologie",
+    "II": "onkologie",
+    "III": "hematologie",
+    "IV": "endokrinologie",
+    "V": "psychiatrie",
+    "VI": "neurologie",
+    "VII": "oftalmologie",
+    "VIII": "otorinolaryngologie",
+    "IX": "kardiologie",
+    "X": "pneumologie",
+    "XI": "gastroenterologie",
+    "XII": "dermatologie",
+    "XIII": "revmatologie",
+    "XIV": "urologie",
+}
 
 # External Resource URLs
 PUBMED_BASE_URL = "https://pubmed.ncbi.nlm.nih.gov/"
@@ -72,15 +116,23 @@ UCSC_GENOME_BROWSER_URL = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&"
 
 # Caching
 DEFAULT_CACHE_TIMEOUT = 60 * 60 * 24 * 7  # 1 week in seconds
+CACHE_TTL_DAY = 60 * 60 * 24  # 24 hours
+CACHE_TTL_HOUR = 60 * 60  # 1 hour
+CACHE_TTL_MONTH = 60 * 60 * 24 * 30  # 30 days
 
 # Pagination
 SYSTEM_PAGE_SIZE = (
     10  # Default page size for all searches (reduced for token efficiency)
 )
-DEFAULT_PAGE_SIZE = 10  # Default page size for unified search
+DEFAULT_PAGE_SIZE = SYSTEM_PAGE_SIZE  # Alias for unified search
 MIN_PAGE_SIZE = 1
 MAX_PAGE_SIZE = 100
 DEFAULT_PAGE_NUMBER = 1
+
+
+def compute_skip(page: int, page_size: int) -> int:
+    """Compute zero-based offset from 1-based page number."""
+    return (page - 1) * page_size
 
 # Search limits
 MAX_RESULTS_PER_DOMAIN_DEFAULT = (

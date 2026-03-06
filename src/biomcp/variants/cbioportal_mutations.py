@@ -1,5 +1,6 @@
 """cBioPortal mutation-specific search functionality."""
 
+import asyncio
 import logging
 from collections import Counter, defaultdict
 from typing import Any, cast
@@ -7,11 +8,11 @@ from typing import Any, cast
 from pydantic import BaseModel, Field
 
 from ..utils.cancer_types_api import get_cancer_type_client
-from ..utils.cbio_http_adapter import CBioHTTPAdapter
 from ..utils.gene_validator import is_valid_gene_symbol, sanitize_gene_symbol
 from ..utils.metrics import track_api_call
 from ..utils.mutation_filter import MutationFilter
 from ..utils.request_cache import request_cache
+from .cbio_core import CBioPortalCoreClient
 
 logger = logging.getLogger(__name__)
 
@@ -54,12 +55,12 @@ class MutationSearchResult(BaseModel):
     mutation_types: dict[str, int] = Field(default_factory=dict)
 
 
-class CBioPortalMutationClient:
+class CBioPortalMutationClient(CBioPortalCoreClient):
     """Client for mutation-specific searches in cBioPortal."""
 
     def __init__(self):
         """Initialize the mutation search client."""
-        self.http_adapter = CBioHTTPAdapter()
+        super().__init__()
 
     async def __aenter__(self):
         """Async context manager entry."""
@@ -115,33 +116,17 @@ class CBioPortalMutationClient:
         max_studies: int,
     ) -> MutationSearchResult | None:
         """Perform the actual mutation search with the adapter."""
-        # Get gene info
-        gene_data, error = await self.http_adapter.get(
-            f"/genes/{gene}", endpoint_key="cbioportal_genes"
-        )
-
-        if error or not gene_data:
-            logger.warning(f"Gene {gene} not found in cBioPortal")
-            return None
-
-        entrez_id = gene_data.get("entrezGeneId")
-
+        entrez_id = await self.get_gene_id(gene)
         if not entrez_id:
-            logger.warning(f"No Entrez ID found for gene {gene}")
             return None
 
-        # Get all mutation profiles
         logger.info(f"Fetching mutation profiles for {gene}")
-        all_profiles, prof_error = await self.http_adapter.get(
-            "/molecular-profiles",
-            params={"molecularAlterationType": "MUTATION_EXTENDED"},
-            endpoint_key="cbioportal_molecular_profiles",
-        )
-
-        if prof_error or not all_profiles:
-            logger.error("Failed to fetch molecular profiles")
+        all_profiles = await self.get_mutation_profiles()
+        if not all_profiles:
             return None
-        profile_ids = [p["molecularProfileId"] for p in all_profiles]
+        profile_ids = [
+            p["molecularProfileId"] for p in all_profiles
+        ]
 
         # Batch fetch mutations (this is the slow part)
         logger.info(
@@ -193,30 +178,20 @@ class CBioPortalMutationClient:
         entrez_id: int,
     ) -> list[MutationHit]:
         """Fetch all mutations for a gene across all profiles."""
-
         try:
-            raw_mutations, error = await self.http_adapter.post(
-                "/mutations/fetch",
-                data={
-                    "molecularProfileIds": profile_ids,
-                    "entrezGeneIds": [entrez_id],
-                },
-                endpoint_key="cbioportal_mutations",
-                cache_ttl=1800,  # Cache for 30 minutes
+            raw_mutations = await self.fetch_mutations_batch(
+                entrez_id, profile_ids
             )
 
-            if error or not raw_mutations:
-                logger.error(f"Failed to fetch mutations: {error}")
+            if not raw_mutations:
                 return []
 
-            # Convert to MutationHit objects
             mutations = []
             for mut in raw_mutations:
                 try:
-                    # Extract study ID from molecular profile ID
-                    study_id = mut.get("molecularProfileId", "").replace(
-                        "_mutations", ""
-                    )
+                    study_id = mut.get(
+                        "molecularProfileId", ""
+                    ).replace("_mutations", "")
 
                     mutations.append(
                         MutationHit(
@@ -224,11 +199,17 @@ class CBioPortalMutationClient:
                             molecular_profile_id=mut.get(
                                 "molecularProfileId", ""
                             ),
-                            protein_change=mut.get("proteinChange", ""),
-                            mutation_type=mut.get("mutationType", ""),
+                            protein_change=mut.get(
+                                "proteinChange", ""
+                            ),
+                            mutation_type=mut.get(
+                                "mutationType", ""
+                            ),
                             start_position=mut.get("startPosition"),
                             end_position=mut.get("endPosition"),
-                            reference_allele=mut.get("referenceAllele"),
+                            reference_allele=mut.get(
+                                "referenceAllele"
+                            ),
                             variant_allele=mut.get("variantAllele"),
                             sample_id=mut.get("sampleId"),
                         )
@@ -250,36 +231,39 @@ class CBioPortalMutationClient:
             studies, error = await self.http_adapter.get(
                 "/studies",
                 endpoint_key="cbioportal_studies",
-                cache_ttl=3600,  # Cache for 1 hour
+                cache_ttl=3600,
             )
 
             if error or not studies:
                 return {}
-            study_info = {}
+
             cancer_type_client = get_cancer_type_client()
 
-            for s in studies:
-                cancer_type_id = s.get("cancerTypeId", "")
-                if cancer_type_id and cancer_type_id != "unknown":
-                    # Use the API to get the proper display name
-                    cancer_type = (
-                        await cancer_type_client.get_cancer_type_name(
-                            cancer_type_id
+            async def _resolve_cancer_type(s: dict) -> str:
+                ct_id = s.get("cancerTypeId", "")
+                if ct_id and ct_id != "unknown":
+                    return await (
+                        cancer_type_client.get_cancer_type_name(
+                            ct_id
                         )
                     )
-                else:
-                    # Try to get from full study info
-                    cancer_type = (
-                        await cancer_type_client.get_study_cancer_type(
-                            s["studyId"]
-                        )
+                return await (
+                    cancer_type_client.get_study_cancer_type(
+                        s["studyId"]
                     )
+                )
 
-                study_info[s["studyId"]] = {
+            cancer_types = await asyncio.gather(
+                *(_resolve_cancer_type(s) for s in studies)
+            )
+
+            return {
+                s["studyId"]: {
                     "name": s.get("name", ""),
-                    "cancer_type": cancer_type,
+                    "cancer_type": ct,
                 }
-            return study_info
+                for s, ct in zip(studies, cancer_types, strict=False)
+            }
         except Exception as e:
             logger.error(f"Error fetching studies: {e}")
             return {}
