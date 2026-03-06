@@ -57,27 +57,27 @@ class TestMCPIntegration:
         assert "openfda_shortage_searcher" in tool_names
         assert "openfda_shortage_getter" in tool_names
         # Czech healthcare tools (czechmed_ prefix per FR-024)
-        assert "czechmed_search_drug" in tool_names
-        assert "czechmed_get_drug_detail" in tool_names
+        assert "czechmed_search_medicine" in tool_names
+        assert "czechmed_get_medicine_detail" in tool_names
         assert "czechmed_get_spc" in tool_names
         assert "czechmed_get_pil" in tool_names
         assert "czechmed_check_availability" in tool_names
         assert "czechmed_search_diagnosis" in tool_names
         assert "czechmed_get_diagnosis_detail" in tool_names
-        assert "czechmed_browse_classification" in tool_names
-        assert "czechmed_search_provider" in tool_names
+        assert "czechmed_browse_diagnosis" in tool_names
+        assert "czechmed_search_providers" in tool_names
         assert "czechmed_get_provider_detail" in tool_names
-        assert "czechmed_search_procedure" in tool_names
+        assert "czechmed_search_procedures" in tool_names
         assert "czechmed_get_procedure_detail" in tool_names
-        assert "czechmed_get_vzp_reimbursement" in tool_names
+        assert "czechmed_get_drug_reimbursement" in tool_names
         assert "czechmed_compare_alternatives" in tool_names
         assert "czechmed_get_reimbursement" in tool_names
         assert "czechmed_batch_check_availability" in tool_names
         assert "czechmed_get_diagnosis_stats" in tool_names
-        assert "czechmed_diagnosis_assistant" in tool_names
+        assert "czechmed_diagnosis_assist" in tool_names
         assert "czechmed_calculate_reimbursement" in tool_names
-        assert "czechmed_get_codebooks" in tool_names
-        assert "czechmed_referral_assistant" in tool_names
+        assert "czechmed_get_nrpzs_codebooks" in tool_names
+        assert "czechmed_referral_assist" in tool_names
         assert "czechmed_drug_profile" in tool_names
         assert "czechmed_find_pharmacies" in tool_names
 

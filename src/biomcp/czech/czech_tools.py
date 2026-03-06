@@ -67,8 +67,8 @@ logger = logging.getLogger(__name__)
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.search_drug")
-async def czechmed_search_drug(
+@track_performance("czechmedmcp.search_medicine")
+async def czechmed_search_medicine(
     query: Annotated[
         str,
         Field(
@@ -99,8 +99,8 @@ async def czechmed_search_drug(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.get_drug_detail")
-async def czechmed_get_drug_detail(
+@track_performance("czechmedmcp.get_medicine_detail")
+async def czechmed_get_medicine_detail(
     sukl_code: Annotated[
         str,
         Field(description="SUKL drug identifier (7-digit code)"),
@@ -263,8 +263,8 @@ async def czechmed_get_diagnosis_detail(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.browse_classification")
-async def czechmed_browse_classification(
+@track_performance("czechmedmcp.browse_diagnosis")
+async def czechmed_browse_diagnosis(
     code: Annotated[
         str | None,
         Field(
@@ -300,8 +300,8 @@ async def czechmed_get_diagnosis_stats(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.diagnosis_assistant")
-async def czechmed_diagnosis_assistant(
+@track_performance("czechmedmcp.diagnosis_assist")
+async def czechmed_diagnosis_assist(
     symptoms: Annotated[
         str,
         Field(description="Symptom description in Czech"),
@@ -344,8 +344,8 @@ async def czechmed_drug_profile(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.search_provider")
-async def czechmed_search_provider(
+@track_performance("czechmedmcp.search_providers")
+async def czechmed_search_providers(
     query: Annotated[
         str | None,
         Field(description="Provider name or keyword"),
@@ -386,8 +386,8 @@ async def czechmed_get_provider_detail(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.get_codebooks")
-async def czechmed_get_codebooks(
+@track_performance("czechmedmcp.get_nrpzs_codebooks")
+async def czechmed_get_nrpzs_codebooks(
     codebook_type: Annotated[
         str,
         Field(
@@ -403,8 +403,8 @@ async def czechmed_get_codebooks(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.referral_assistant")
-async def czechmed_referral_assistant(
+@track_performance("czechmedmcp.referral_assist")
+async def czechmed_referral_assist(
     diagnosis_code: Annotated[
         str,
         Field(description="MKN-10 code (e.g. I25.1)"),
@@ -434,8 +434,8 @@ async def czechmed_referral_assistant(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.search_procedure")
-async def czechmed_search_procedure(
+@track_performance("czechmedmcp.search_procedures")
+async def czechmed_search_procedures(
     query: Annotated[
         str,
         Field(description="Procedure code or name"),
@@ -494,8 +494,8 @@ async def czechmed_calculate_reimbursement(
 
 
 @mcp_app.tool()
-@track_performance("czechmedmcp.get_vzp_reimbursement")
-async def czechmed_get_vzp_reimbursement(
+@track_performance("czechmedmcp.get_drug_reimbursement")
+async def czechmed_get_drug_reimbursement(
     sukl_code: Annotated[
         str,
         Field(description="7-digit SUKL code"),
