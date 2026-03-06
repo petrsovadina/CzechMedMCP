@@ -1,341 +1,292 @@
 # České zdravotnické nástroje
 
-CzechMedMCP rozšiřuje BioMCP o 14 českých zdravotnických MCP nástrojů v 5 modulech.
+CzechMedMCP rozšiřuje BioMCP o **23 českých zdravotnických MCP nástrojů** v 5 modulech + 3 workflow orchestrace.
 
-## Moduly
+## Přehled modulů
 
 | Modul | Nástrojů | Zdroj dat |
 |-------|----------|-----------|
-| SUKL | 5 | Státní ústav pro kontrolu léčiv (prehledy.sukl.cz) |
-| MKN-10 | 3 | Mezinárodní klasifikace nemocí, 10. revize (mkn10.uzis.cz) |
-| NRPZS | 2 | Národní registr poskytovatelů zdravotních služeb (nrpzs.uzis.cz) |
-| SZV | 2 | Seznam zdravotních výkonů (nzip.cz) |
-| VZP | 2 | Číselníky Všeobecné zdravotní pojišťovny (vzp.cz) |
+| SUKL | 8 | Státní ústav pro kontrolu léčiv (prehledy.sukl.cz) |
+| MKN-10 | 4 | Mezinárodní klasifikace nemocí (mkn10.uzis.cz, nzip.cz) |
+| NRPZS | 3 | Národní registr poskytovatelů zdravotních služeb (nrpzs.uzis.cz) |
+| SZV | 3 | Seznam zdravotních výkonů (nzip.cz) |
+| VZP | 2 | Úhrady léčiv VZP (vzp.cz) |
+| Workflow | 3 | Orchestrace českých + globálních modulů |
+
+Všechny nástroje mají prefix `czechmed_` (konvence FR-024).
 
 ---
 
-## SUKL - Registr léčiv
+## SUKL — Registr léčiv (8 nástrojů)
 
-### sukl_drug_searcher
+### czechmed_search_medicine
 
-Vyhledávání v registru léčiv podle názvu přípravku, účinné látky nebo ATC kódu.
+Fuzzy hledání léčiv podle názvu, účinné látky, SUKL kódu nebo ATC kódu. Podporuje diakritiku.
 
-```bash
-# Vyhledání podle názvu
-biomcp czech sukl search --query "Ibuprofen"
-
-# Vyhledání podle ATC kódu
-biomcp czech sukl search --query "M01AE01"
-
-# Vyhledání s diakritikou i bez
-biomcp czech sukl search --query "Paralen"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Výchozí | Popis |
 |----------|-----|---------|---------|-------|
-| `query` | str | ano | - | Název léku, účinná látka nebo ATC kód |
+| `query` | str | ano | — | Název léku, účinná látka, SUKL kód nebo ATC kód |
 | `page` | int | ne | 1 | Číslo stránky (od 1) |
-| `page_size` | int | ne | 10 | Počet výsledků na stránku (1-100) |
+| `page_size` | int | ne | 10 | Počet výsledků (1–100) |
 
-**Odpověď:** JSON s polemi `total`, `page`, `page_size`, `results` (seznam `DrugSummary`).
+### czechmed_get_medicine_detail
 
-### sukl_drug_getter
+Kompletní detail přípravku podle SUKL kódu — složení, registrace, léková forma, ATC.
 
-Získání podrobností o léku podle SUKL kódu včetně složení, registračních údajů a odkazů na dokumenty.
-
-```bash
-biomcp czech sukl get "0001234"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
 | `sukl_code` | str | ano | 7místný identifikátor SUKL |
 
-**Odpověď:** JSON s kompletním záznamem `Drug` - název, účinné látky, léková forma, ATC kód, registrační číslo, držitel registrace, URL pro SPC a PIL.
+### czechmed_get_spc
 
-### sukl_spc_getter
+SPC dokument (Souhrn údajů o přípravku). Vrací celý text nebo konkrétní sekci.
 
-Získání odkazu na Souhrn údajů o přípravku (SPC/SmPC) pro daný lék.
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `sukl_code` | str | ano | Identifikátor SUKL |
+| `section` | str \| None | ne | Číslo sekce SPC (např. "4.1", "5.1") |
 
-```bash
-biomcp czech sukl spc "0001234"
-```
+### czechmed_get_pil
 
-**Parametry:**
+Příbalová informace (PIL). Vrací celý text nebo konkrétní sekci.
+
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `sukl_code` | str | ano | Identifikátor SUKL |
+| `section` | str \| None | ne | Sekce: dosage, contraindications, side_effects, interactions, pregnancy, storage |
+
+### czechmed_check_availability
+
+Kontrola aktuální dostupnosti léku na českém trhu.
+
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
 | `sukl_code` | str | ano | Identifikátor SUKL |
 
-**Odpověď:** JSON s polemi `sukl_code`, `name`, `spc_text`, `spc_url`, `source`.
+### czechmed_batch_check_availability
 
-### sukl_pil_getter
+Hromadná kontrola dostupnosti pro více léčiv najednou.
 
-Získání odkazu na Příbalovou informaci (PIL) pro daný lék.
-
-```bash
-biomcp czech sukl pil "0001234"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
-| `sukl_code` | str | ano | Identifikátor SUKL |
+| `sukl_codes` | list[str] | ano | Seznam SUKL kódů (1–50) |
 
-**Odpověď:** JSON s polemi `sukl_code`, `name`, `pil_text`, `pil_url`, `source`.
+### czechmed_get_reimbursement
 
-### sukl_availability_checker
+Cena, úhrada pojišťovnou, doplatek pacienta a podmínky úhrady.
 
-Kontrola aktuální dostupnosti léku na českém trhu. Ověřuje, zda je lék v aktivní distribuci.
-
-```bash
-biomcp czech sukl availability "0001234"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
-| `sukl_code` | str | ano | Identifikátor SUKL |
+| `sukl_code` | str | ano | 7místný SUKL kód |
 
-**Odpověď:** JSON s polemi `sukl_code`, `name`, `status` (`available`/`limited`/`unavailable`), `last_checked` (ISO 8601), `note`, `source`.
+### czechmed_find_pharmacies
+
+Hledání lékáren podle města, PSC nebo filtru nonstop.
+
+| Parametr | Typ | Povinný | Výchozí | Popis |
+|----------|-----|---------|---------|-------|
+| `city` | str \| None | ne | None | Název města |
+| `postal_code` | str \| None | ne | None | 5místné PSC |
+| `nonstop_only` | bool | ne | false | Pouze lékárny 24/7 |
+| `page` | int | ne | 1 | Číslo stránky |
+| `page_size` | int | ne | 10 | Počet výsledků (1–100) |
 
 ---
 
-## MKN-10 - Kódy diagnóz
+## MKN-10 — Klasifikace nemocí (4 nástroje)
 
-### mkn_diagnosis_searcher
+### czechmed_search_diagnosis
 
-Vyhledávání diagnóz v české klasifikaci MKN-10 podle kódu nebo volného textu v češtině. Podporuje vyhledávání s diakritikou i bez.
+Fulltext vyhledávání v české MKN-10 podle kódu nebo textu. Podporuje diakritiku.
 
-```bash
-# Vyhledání podle kódu
-biomcp czech mkn search --query "J06.9"
-
-# Vyhledání volným textem
-biomcp czech mkn search --query "infarkt"
-biomcp czech mkn search --query "angina"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Výchozí | Popis |
 |----------|-----|---------|---------|-------|
-| `query` | str | ano | - | Kód MKN-10 nebo text v češtině |
-| `max_results` | int | ne | 10 | Maximální počet výsledků (1-100) |
+| `query` | str | ano | — | Kód MKN-10 nebo text v češtině |
+| `max_results` | int | ne | 10 | Maximální počet výsledků (1–100) |
 
-**Odpověď:** JSON s polemi `query`, `total`, `results` (seznam s `code`, `name_cs`, `kind`).
+### czechmed_get_diagnosis_detail
 
-### mkn_diagnosis_getter
+Detail diagnózy s hierarchií (kapitola, blok, kategorie), inkluzemi a exkluzemi.
 
-Získání kompletních podrobností diagnózy včetně hierarchie (kapitola, blok, kategorie).
-
-```bash
-biomcp czech mkn get "J06.9"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
 | `code` | str | ano | Kód MKN-10 (např. "J06.9") |
 
-**Odpověď:** JSON s kompletním záznamem `Diagnosis` - kód, český název, hierarchie (kapitola, blok, kategorie), zahrnuté/vyloučené stavy, modifikátory.
+### czechmed_browse_diagnosis
 
-### mkn_category_browser
+Procházení stromu kategorií MKN-10. Bez kódu zobrazí kapitoly, s kódem daný uzel a potomky.
 
-Procházení hierarchie kategorií MKN-10. Bez zadání kódu zobrazí kořenové kapitoly, s kódem zobrazí daný uzel a jeho přímé potomky.
-
-```bash
-# Zobrazení kapitol
-biomcp czech mkn browse
-
-# Procházení konkrétní kategorie
-biomcp czech mkn browse "J00-J06"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
-| `code` | str \| None | ne | Kód kategorie pro procházení (bez = kořenové kapitoly) |
+| `code` | str \| None | ne | Kód kategorie (bez = kořenové kapitoly) |
 
-**Odpověď:** JSON s hierarchickým stromem - kód, český název, typ uzlu, potomci.
+### czechmed_get_diagnosis_stats
+
+Epidemiologické statistiky pro diagnózu — počet případů, pohlaví, věkové skupiny, regiony.
+
+| Parametr | Typ | Povinný | Výchozí | Popis |
+|----------|-----|---------|---------|-------|
+| `code` | str | ano | — | Kód MKN-10 (např. "J06") |
+| `year` | int \| None | ne | None | Rok (2015–2025) |
 
 ---
 
-## NRPZS - Poskytovatelé zdravotních služeb
+## NRPZS — Poskytovatelé zdravotních služeb (3 nástroje)
 
-### nrpzs_provider_searcher
+### czechmed_search_providers
 
-Vyhledávání poskytovatelů zdravotních služeb v Národním registru (NRPZS) podle názvu, města nebo odbornosti. Podporuje kombinaci filtrů.
+Hledání poskytovatelů podle názvu, města nebo odbornosti. Podporuje kombinaci filtrů.
 
-```bash
-# Vyhledání kardiologů v Praze
-biomcp czech nrpzs search --city "Praha" --specialty "kardiologie"
-
-# Vyhledání podle názvu
-biomcp czech nrpzs search --query "Nemocnice"
-
-# Kombinace filtrů
-biomcp czech nrpzs search --query "MUDr" --city "Brno"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Výchozí | Popis |
 |----------|-----|---------|---------|-------|
-| `query` | str \| None | ne | None | Název poskytovatele nebo klíčové slovo |
-| `city` | str \| None | ne | None | Název obce |
+| `query` | str \| None | ne | None | Název poskytovatele |
+| `city` | str \| None | ne | None | Město |
 | `specialty` | str \| None | ne | None | Lékařská odbornost |
-| `page` | int | ne | 1 | Číslo stránky (od 1) |
-| `page_size` | int | ne | 10 | Počet výsledků na stránku (1-100) |
+| `page` | int | ne | 1 | Číslo stránky |
+| `page_size` | int | ne | 10 | Počet výsledků (1–100) |
 
-**Odpověď:** JSON s polemi `total`, `page`, `page_size`, `results` (seznam `ProviderSummary` - ID, název, město, odbornosti).
+### czechmed_get_provider_detail
 
-### nrpzs_provider_getter
+Kompletní profil poskytovatele s pracovišti, kontakty a typy péče.
 
-Získání kompletních podrobností poskytovatele včetně pracovišť, kontaktních údajů a typů péče.
-
-```bash
-biomcp czech nrpzs get "12345"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
 | `provider_id` | str | ano | Identifikátor poskytovatele v NRPZS |
 
-**Odpověď:** JSON s kompletním záznamem `HealthcareProvider` - název, právní forma, IČO, adresa, odbornosti, typy péče, seznam pracovišť s kontakty.
+### czechmed_get_nrpzs_codebooks
+
+Referenční číselníky NRPZS — odbornosti, formy péče, druhy péče.
+
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `codebook_type` | str | ano | Typ: specialties, care_forms, care_types |
 
 ---
 
-## SZV - Zdravotní výkony
+## SZV — Zdravotní výkony (3 nástroje)
 
-### szv_procedure_searcher
+### czechmed_search_procedures
 
-Vyhledávání zdravotních výkonů ze Seznamu zdravotních výkonů (SZV) podle kódu nebo názvu. Data pocházejí z NZIP Open Data API.
+Hledání zdravotních výkonů podle kódu nebo názvu.
 
-```bash
-# Vyhledání podle názvu
-biomcp czech szv search --query "EKG"
-
-# Vyhledání podle kódu
-biomcp czech szv search --query "09513"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Výchozí | Popis |
 |----------|-----|---------|---------|-------|
-| `query` | str | ano | - | Kód výkonu nebo název |
-| `max_results` | int | ne | 10 | Maximální počet výsledků (1-100) |
+| `query` | str | ano | — | Kód výkonu nebo název |
+| `max_results` | int | ne | 10 | Maximální počet výsledků (1–100) |
 
-**Odpověď:** JSON s polemi `total`, `results` (seznam s `code`, `name`, `point_value`, `category`).
+### czechmed_get_procedure_detail
 
-### szv_procedure_getter
+Detail výkonu — bodová hodnota, čas, podmínky, omezení, odbornosti.
 
-Získání kompletních podrobností zdravotního výkonu včetně bodové hodnoty, času, omezení frekvence a požadovaných odborností.
-
-```bash
-biomcp czech szv get "09513"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Popis |
 |----------|-----|---------|-------|
 | `code` | str | ano | Kód výkonu (např. "09513") |
 
-**Odpověď:** JSON s kompletním záznamem `HealthProcedure` - kód, název, kategorie, bodová hodnota, čas v minutách, omezení frekvence, kódy odborností, materiálové požadavky, poznámky.
+### czechmed_calculate_reimbursement
 
----
+Kalkulace úhrady výkonu v CZK pro konkrétní pojišťovnu.
 
-## VZP - Číselníky pojišťovny
-
-### vzp_codebook_searcher
-
-Vyhledávání v číselnících Všeobecné zdravotní pojišťovny (VZP). Prohledává jeden nebo všechny dostupné typy číselníků.
-
-```bash
-# Vyhledání ve všech číselnících
-biomcp czech vzp search --query "antibiotika"
-
-# Vyhledání v konkrétním číselníku
-biomcp czech vzp search --query "EKG" --type "seznam_vykonu"
-```
-
-**Parametry:**
 | Parametr | Typ | Povinný | Výchozí | Popis |
 |----------|-----|---------|---------|-------|
-| `query` | str | ano | - | Hledaný text (kód, název nebo popis) |
-| `codebook_type` | str \| None | ne | None | Filtr podle typu číselníku |
-| `max_results` | int | ne | 10 | Maximální počet výsledků (1-100) |
-
-**Typy číselníků:** `seznam_vykonu`, `diagnoza`, `lekarsky_predpis`, `atc`
-
-**Odpověď:** JSON s polemi `total`, `results` (seznam s `codebook_type`, `code`, `name`).
-
-### vzp_codebook_getter
-
-Získání podrobností položky číselníku VZP podle typu a kódu.
-
-```bash
-biomcp czech vzp get "seznam_vykonu" "09513"
-```
-
-**Parametry:**
-| Parametr | Typ | Povinný | Popis |
-|----------|-----|---------|-------|
-| `codebook_type` | str | ano | Identifikátor typu číselníku |
-| `code` | str | ano | Kód položky |
-
-**Odpověď:** JSON s kompletním záznamem `CodebookEntry` - typ číselníku, kód, název, popis, platnost od/do, pravidla úhrad, související kódy.
+| `procedure_code` | str | ano | — | 5místný kód výkonu |
+| `insurance_code` | str | ne | "111" | Kód pojišťovny: 111 (VZP), 201 (VoZP), 205 (CPZP), 207 (OZP), 209 (ZPS), 211 (ZPMV), 213 (RBP) |
+| `count` | int | ne | 1 | Počet výkonů |
 
 ---
 
-## Zdroje dat
+## VZP — Úhrady léčiv (2 nástroje)
 
-| Zdroj | URL | Typ dat | Autentizace |
-|-------|-----|---------|-------------|
-| SUKL DLP API v1 | prehledy.sukl.cz | Registr léčiv, SPC, PIL, dostupnost | Nevyžadována |
-| NRPZS API v1 | nrpzs.uzis.cz/api/v1 | Poskytovatelé zdravotních služeb | Nevyžadována |
-| MKN-10 ClaML | mkn10.uzis.cz | Diagnózy MKN-10 (lokální XML) | Nevyžadována |
-| NZIP Open Data v3 | nzip.cz/api/v3 | Zdravotní výkony | Nevyžadována |
-| VZP | vzp.cz | Číselníky pojišťovny | Nevyžadována |
+### czechmed_get_drug_reimbursement
 
-Všechny zdroje dat jsou veřejná API české státní správy. Autentizace není vyžadována.
+Detailní úhrada léku od VZP — skupina, maximální cena, pokrytí, doplatek.
+
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `sukl_code` | str | ano | 7místný SUKL kód |
+
+### czechmed_compare_alternatives
+
+Porovnání cenových alternativ v rámci stejné ATC skupiny. Seřazeno podle doplatku.
+
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `sukl_code` | str | ano | 7místný SUKL kód referenčního léku |
+
+---
+
+## Workflow — orchestrace (3 nástroje)
+
+Workflow nástroje kombinují data z více modulů (českých i globálních) v jednom volání.
+
+### czechmed_drug_profile
+
+Kompletní profil léku: SUKL registrace + dostupnost + úhrada + PubMed evidence.
+
+| Parametr | Typ | Povinný | Popis |
+|----------|-----|---------|-------|
+| `query` | str | ano | Název léku, účinná látka nebo SUKL kód |
+
+### czechmed_diagnosis_assist
+
+Diagnostický asistent: navrhne MKN-10 kódy pro popsané symptomy a doplní PubMed evidenci.
+
+| Parametr | Typ | Povinný | Výchozí | Popis |
+|----------|-----|---------|---------|-------|
+| `symptoms` | str | ano | — | Popis symptomů v češtině |
+| `max_candidates` | int | ne | 5 | Max. počet kandidátních diagnóz (1–10) |
+
+### czechmed_referral_assist
+
+Asistent doporučení: z diagnózy určí odbornost a najde poskytovatele v daném městě.
+
+| Parametr | Typ | Povinný | Výchozí | Popis |
+|----------|-----|---------|---------|-------|
+| `diagnosis_code` | str | ano | — | Kód MKN-10 (např. "I25.1") |
+| `city` | str | ano | — | Město pacienta |
+| `max_providers` | int | ne | 10 | Max. počet poskytovatelů (1–20) |
+
+---
+
+## Integrace do unified routeru
+
+České domény jsou dostupné i přes unifikovaný `search()` a `fetch()` router:
+
+```python
+# Hledání přes SUKL registr
+search(domain="sukl_drug", query="ibuprofen")
+
+# Detail diagnózy z MKN-10
+fetch(domain="mkn_diagnosis", id="J06.9")
+
+# Detail poskytovatele z NRPZS
+fetch(domain="nrpzs_provider", id="12345678")
+
+# Hledání výkonů v SZV
+search(domain="szv_procedure", query="EKG")
+
+# Úhrada léku z VZP
+fetch(domain="vzp_reimbursement", id="0012345")
+```
+
+Podporované domény: `sukl_drug`, `mkn_diagnosis`, `nrpzs_provider`, `szv_procedure`, `vzp_reimbursement`.
+
+---
 
 ## Diakritika
 
-Všechny vyhledávací nástroje podporují transparentní práci s diakritikou. Vyhledávání funguje shodně s diakritikou i bez ní:
+Všechny vyhledávací nástroje podporují transparentní práci s diakritikou:
 
 - "leky" najde "léky"
 - "Usti" najde "Ústí"
-- "kardiologie" = "kardiologie" (beze změny)
+- "kardiologie" = "kardiologie"
 
-Normalizace se provádí pomocí Unicode NFD dekompozice a odstranění kombinujících znaků (kategorie "Mn"). Originální text v datech je vždy zachován.
+## Zdroje dat
 
-## Cachování
-
-Odpovědi z externích API jsou lokálně cachovány pomocí `diskcache` pro zrychlení opakovaných dotazů a offline přístup:
-
-| Modul | Typ dat | TTL cache |
-|-------|---------|-----------|
-| SUKL | Seznam léčiv | 24 hodin |
-| SUKL | Detail léku, SPC, PIL | 7 dní |
-| SUKL | Dostupnost | 1 hodina |
-| MKN-10 | Parsovaný ClaML XML | 30 dní |
-| NRPZS | Výsledky vyhledávání | 24 hodin |
-| NRPZS | Detail poskytovatele | 7 dní |
-| SZV | Seznam výkonů | 24 hodin |
-| SZV | Detail výkonu | 7 dní |
-| VZP | Číselník | 24 hodin |
-| VZP | Detail položky | 7 dní |
-
-## Chybové odpovědi
-
-Všechny nástroje vracejí chybové zprávy ve formátu JSON:
-
-```json
-{"error": "Drug not found: 9999999"}
-{"error": "SUKL API unavailable: Connection refused"}
-{"error": "Code not found: Z99.9"}
-{"error": "Provider not found: 00000"}
-```
-
-Při nedostupnosti externího API se nástroje pokusí použít cachovaná data. Pokud cache neobsahuje relevantní data, vrátí chybovou zprávu s popisem problému.
+| Zdroj | Typ | Licence | Autentizace |
+|-------|-----|---------|-------------|
+| SUKL Open Data | Live REST API | Veřejné | Ne |
+| SUKL web (PIL/SPC) | HTML scraping + lxml | Veřejné | Ne |
+| MKN-10 (UZIS/NZIP) | Offline XML/CSV + in-memory cache | CC BY 4.0 | Ne |
+| NRPZS REST API | Live REST API | CC BY 4.0 | Ne |
+| SZV (MZ CR) | Offline CSV + in-memory cache | Veřejné | Ne |
+| VZP ceníky | Web scraping | Veřejné | Ne |
