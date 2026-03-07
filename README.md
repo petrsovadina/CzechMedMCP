@@ -270,7 +270,7 @@ make check
 
 | Adresář | Popis | Počet |
 |---------|-------|-------|
-| `tests/tdd/` | Unit testy s mockovanými HTTP | 677 |
+| `tests/tdd/` | Unit testy s mockovanými HTTP | 736 |
 | `tests/czech/` | Testy českých modulů (offline) | 236 |
 | `tests/bdd/` | BDD feature testy | — |
 | `tests/integration/` | Live API testy (`@pytest.mark.integration`) | — |
