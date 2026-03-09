@@ -1,4 +1,4 @@
-"""BioMCP Command Line Interface for genetic variants."""
+"""CzechMedMCP Command Line Interface for genetic variants."""
 
 import asyncio
 from typing import Annotated

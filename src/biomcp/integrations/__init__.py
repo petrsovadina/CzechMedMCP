@@ -1,4 +1,4 @@
-"""BioThings API integrations for BioMCP."""
+"""BioThings API integrations for CzechMedMCP."""
 
 from .biothings_client import BioThingsClient, DiseaseInfo, GeneInfo
 

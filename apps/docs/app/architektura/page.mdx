@@ -1,0 +1,46 @@
+# Architektura
+
+CzechMedMCP je MCP server postavený na [FastMCP](https://github.com/jlowin/fastmcp) frameworku s modulární architekturou.
+
+## Vysokoúrovňový přehled
+
+```
+biomcp.__main__:main()
+  → cli/ (Typer app)
+    → cli/server.py:run_server()
+      → core.py:mcp_app (FastMCP singleton)
+```
+
+## Registrace nástrojů
+
+Všech 60 nástrojů se registruje dekorátorem `@mcp_app.tool()` přes importy v `src/biomcp/__init__.py`:
+
+| Modul | Nástrojů | Soubor |
+|-------|----------|--------|
+| Standardní biomedicínské | 33 | `individual_tools.py` |
+| České zdravotnické | 23 | `czech/czech_tools.py` |
+| Router (search + fetch) | 2 | `router.py` |
+| Sekvenční myšlení | 1 | `thinking_tool.py` |
+| Metriky | 1 | `metrics_handler.py` |
+
+## Vzor doménového modulu
+
+Každá doména (`articles/`, `trials/`, `variants/`, `czech/sukl/` atd.) má:
+
+1. **Privátní implementace** (`_function()`) v `search.py` / `getter.py`
+2. **Registrace nástroje** v `individual_tools.py` nebo `czech_tools.py`
+3. **CLI příkaz** v `cli/`
+4. **Pydantic modely** pro validaci
+
+## Klíčové soubory
+
+| Soubor | Účel |
+|--------|------|
+| `src/biomcp/core.py` | FastMCP singleton, `StrEnum`, `ensure_list()` |
+| `src/biomcp/constants.py` | API URL, timeouty, limity |
+| `src/biomcp/http_client.py` | HTTP vrstva s cache, retry, circuit breaker |
+| `src/biomcp/exceptions.py` | Hierarchie výjimek |
+| `src/biomcp/individual_tools.py` | 33 standardních registrací |
+| `src/biomcp/czech/czech_tools.py` | 23 českých registrací |
+| `src/biomcp/router.py` | Unifikované search + fetch |
+| `src/biomcp/router_handlers.py` | Doménově specifické handlery |

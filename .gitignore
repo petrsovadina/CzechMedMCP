@@ -143,7 +143,14 @@ llms/
 vault/
 
 .DS_Store
-/node_modules/
+
+# Node.js / Turborepo monorepo
+node_modules/
+.next/
+out/
+.turbo/
+next-env.d.ts
+.vercel/
 
 CLAUDE.md
 lzyank.toml

@@ -1,4 +1,4 @@
-"""Query router for unified search in BioMCP."""
+"""Query router for unified search in CzechMedMCP."""
 
 import asyncio
 from dataclasses import dataclass

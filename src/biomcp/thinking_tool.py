@@ -46,7 +46,7 @@ async def think(
 
     🚨 IMPORTANT: You MUST use this tool BEFORE any search or fetch operations when:
     - Researching ANY biomedical topic (genes, diseases, variants, trials)
-    - Planning to use multiple BioMCP tools
+    - Planning to use multiple CzechMedMCP tools
     - Answering questions that require analysis or synthesis
     - Comparing information from different sources
     - Making recommendations or drawing conclusions

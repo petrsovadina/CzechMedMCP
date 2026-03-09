@@ -13,7 +13,7 @@ async def get_performance_metrics(
         "Specific metric name to retrieve, or None for all metrics",
     ] = None,
 ) -> str:
-    """Get performance metrics for BioMCP operations.
+    """Get performance metrics for CzechMedMCP operations.
 
     Returns performance statistics including:
     - Request counts and success rates
@@ -38,7 +38,7 @@ async def get_performance_metrics(
         if not all_summaries:
             return "No metrics collected yet"
 
-        lines = ["# BioMCP Performance Metrics\n"]
+        lines = ["# CzechMedMCP Performance Metrics\n"]
         for name in sorted(all_summaries.keys()):
             summary = all_summaries[name]
             lines.append(f"## {name}")

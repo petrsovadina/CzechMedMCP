@@ -1,0 +1,55 @@
+# České moduly
+
+## Struktura
+
+```
+src/biomcp/czech/
+├── __init__.py
+├── czech_tools.py      # 23 @mcp_app.tool() registrací
+├── response.py         # format_czech_response() — dual output
+├── sukl/               # SUKL registr léčiv
+│   ├── search.py       # Vyhledávání
+│   ├── getter.py       # Detail, SPC, PIL
+│   ├── availability.py # Dostupnost
+│   └── models.py       # Pydantic modely
+├── mkn10/              # MKN-10 klasifikace
+│   ├── search.py
+│   ├── getter.py
+│   └── models.py
+├── nrpzs/              # Poskytovatelé ZS
+│   ├── search.py
+│   ├── getter.py
+│   └── models.py
+├── szv/                # Seznam zdravotních výkonů
+│   ├── search.py
+│   ├── getter.py
+│   └── models.py
+├── vzp/                # Úhrady
+│   ├── reimbursement.py
+│   ├── alternatives.py
+│   └── models.py
+└── workflows/          # Orchestrační moduly
+    ├── drug_profile.py
+    ├── diagnosis.py
+    └── referral.py
+```
+
+## Výstupní formát
+
+Všechny české nástroje vracejí data přes `format_czech_response()`:
+
+- Strukturovaný markdown pro AI asistenty
+- JSON fallback pro programový přístup
+- UTF-8 s českými znaky (`ensure_ascii=False`)
+
+## In-memory cache
+
+- **MKN-10**: ~20 MB v paměti (LRU cache, lazy-load při prvním dotazu)
+- **SZV**: ~5 MB v paměti (LRU cache)
+
+## Vyhledávání
+
+České moduly podporují:
+- Fuzzy matching (překlepy, částečná shoda)
+- Transparentní diakritiku (`leky` = `léky`)
+- Fulltext v češtině

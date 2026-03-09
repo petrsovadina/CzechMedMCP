@@ -1,9 +1,9 @@
 services:
-  biomcp-server:
+  czechmedmcp-server:
     platform: linux/amd64
     build: .
-    image: us.gcr.io/graceful-medley-134315/biomcp-server:${TAG}
-    container_name: biomcp-server
+    image: us.gcr.io/graceful-medley-134315/czechmedmcp-server:${TAG}
+    container_name: czechmedmcp-server
     ports:
       - "8000:8000"
     environment:

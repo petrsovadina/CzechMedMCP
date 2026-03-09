@@ -1,0 +1,89 @@
+# SUKL — Registr léčiv (8 nástrojů)
+
+Nástroje pro práci s databází Státního ústavu pro kontrolu léčiv.
+
+## czechmed_search_medicine
+
+Fuzzy vyhledávání léčivých přípravků podle názvu, účinné látky, SUKL kódu nebo ATC skupiny.
+
+```
+Parametry:
+  query (str)      — hledaný výraz (min. 2 znaky)
+  page (int)       — stránka výsledků (default: 1)
+  page_size (int)  — počet výsledků na stránku (default: 10, max: 50)
+```
+
+**Příklad**: *„Vyhledej přípravky s ibuprofenem"* → `czechmed_search_medicine(query="ibuprofen")`
+
+## czechmed_get_medicine_detail
+
+Kompletní detail léčivého přípravku včetně složení, indikací a registračních údajů.
+
+```
+Parametry:
+  sukl_code (str)  — SUKL kód přípravku
+```
+
+## czechmed_get_spc
+
+Souhrn údajů o přípravku (SPC). Lze načíst celý dokument nebo konkrétní sekci.
+
+```
+Parametry:
+  sukl_code (str)      — SUKL kód
+  section (str|None)   — volitelná sekce (např. "dávkování", "kontraindikace")
+```
+
+**Sekce SPC**: terapeutické indikace, dávkování, kontraindikace, interakce, nežádoucí účinky, těhotenství, farmakodynamika, farmakokinetika, předávkování.
+
+## czechmed_get_pil
+
+Příbalová informace (PIL) pro pacienty. Lze filtrovat podle sekce.
+
+```
+Parametry:
+  sukl_code (str)      — SUKL kód
+  section (str|None)   — volitelná sekce
+```
+
+## czechmed_check_availability
+
+Aktuální dostupnost léčivého přípravku na trhu.
+
+```
+Parametry:
+  sukl_code (str)  — SUKL kód
+```
+
+Vrací stav dostupnosti, datum posledního dodání a případná omezení.
+
+## czechmed_batch_check_availability
+
+Hromadná kontrola dostupnosti — až 50 přípravků najednou.
+
+```
+Parametry:
+  sukl_codes (list[str])  — seznam SUKL kódů (max 50)
+```
+
+## czechmed_get_reimbursement
+
+Informace o ceně, úhradě ze zdravotního pojištění a doplatku pacienta.
+
+```
+Parametry:
+  sukl_code (str)  — SUKL kód
+```
+
+## czechmed_find_pharmacies
+
+Vyhledání lékáren podle lokality.
+
+```
+Parametry:
+  city (str|None)       — město
+  zip_code (str|None)   — PSČ
+  nonstop (bool)        — pouze nonstop lékárny
+  page (int)            — stránka
+  page_size (int)       — výsledků na stránku
+```

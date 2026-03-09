@@ -1,4 +1,4 @@
-"""Performance monitoring and metrics collection for BioMCP."""
+"""Performance monitoring and metrics collection for CzechMedMCP."""
 
 import asyncio
 import functools

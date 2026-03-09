@@ -1,0 +1,53 @@
+# Workflow — Orchestrační nástroje (3 nástroje)
+
+Workflow nástroje kombinují více zdrojů do jednoho dotazu a poskytují komplexní odpovědi.
+
+## czechmed_drug_profile
+
+Kompletní profil léčiva — kombinuje SUKL detail, dostupnost, úhradu a PubMed evidenci.
+
+```
+Parametry:
+  query (str)  — název léku nebo SUKL kód
+```
+
+**Příklad**: *„Vytvoř kompletní profil léku Metformin"*
+
+Co vrací:
+1. SUKL detail přípravku
+2. Aktuální dostupnost na trhu
+3. Úhrada a doplatek
+4. Relevantní PubMed články
+
+## czechmed_diagnosis_assist
+
+Diagnostická podpora — kombinuje MKN-10 vyhledávání s PubMed evidencí.
+
+```
+Parametry:
+  symptoms (str)  — popis symptomů nebo diagnóza
+```
+
+**Příklad**: *„Pacient má bolest na hrudi a dušnost"*
+
+Co vrací:
+1. Relevantní MKN-10 kódy
+2. PubMed články k diferenciální diagnostice
+
+## czechmed_referral_assist
+
+Podpora odesílání pacienta — validuje diagnózu a hledá vhodné poskytovatele.
+
+```
+Parametry:
+  diagnosis_code (str)  — MKN-10 kód
+  city (str)            — město pro vyhledání poskytovatelů
+  specialty (str|None)  — volitelná odbornost
+```
+
+**Příklad**: *„Odeslání pacienta s I25.1 ke kardiologovi v Praze"*
+
+Co vrací:
+1. Validace MKN-10 kódu
+2. Seznam poskytovatelů v dané lokalitě
+3. Doporučení odbornosti na základě diagnózy

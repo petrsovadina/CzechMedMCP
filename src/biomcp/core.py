@@ -1,4 +1,4 @@
-"""Core module for BioMCP containing shared resources."""
+"""Core module for CzechMedMCP containing shared resources."""
 
 from contextlib import asynccontextmanager
 from enum import Enum

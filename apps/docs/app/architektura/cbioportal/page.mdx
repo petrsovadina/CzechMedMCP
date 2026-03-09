@@ -1,0 +1,30 @@
+# cBioPortal klienti
+
+## Hierarchie
+
+Tři klienti dědí z `CBioPortalCoreClient` (`variants/cbio_core.py`):
+
+```
+CBioPortalCoreClient (sdílené metody)
+├── CBioPortalExternalClient  — obohacení variant
+├── CBioPortalMutationClient  — vyhledávání mutací
+└── CBioPortalSearchClient    — agregace na úrovni genů
+```
+
+## Sdílené metody
+
+`CBioPortalCoreClient` poskytuje:
+- `get_gene_id()` — převod symbolu genu na cBioPortal ID
+- `get_mutation_profiles()` — profily mutací pro studii
+- `fetch_mutations_batch()` — dávkové načtení mutací
+
+## HTTP adapter
+
+Všichni klienti používají `CBioHTTPAdapter` (`utils/cbio_http_adapter.py`) pro HTTP komunikaci s cBioPortal API.
+
+## Automatické obohacení
+
+Při vyhledávání variant CzechMedMCP automaticky obohacuje výsledky o cBioPortal data:
+- Frekvence mutací napříč studiemi
+- Ko-výskyt s dalšími mutacemi
+- Mutační profily pro geny

@@ -1,0 +1,28 @@
+# Pro vývojáře
+
+Průvodce pro přispěvatele a vývojáře CzechMedMCP.
+
+## Repozitář
+
+- **GitHub**: [github.com/petrsovadina/biomcp](https://github.com/petrsovadina/biomcp)
+- **Branch**: `python-main` (aktivní vývoj)
+- **Licence**: MIT
+
+## Rychlý start pro vývojáře
+
+```bash
+git clone https://github.com/petrsovadina/biomcp.git
+cd biomcp
+git checkout python-main
+uv sync --all-extras
+uv run pre-commit install
+uv run python -m pytest -x --ff -n auto
+```
+
+## Obsah sekce
+
+- [Lokální vývoj](/vyvojari/lokalni-vyvoj) — nastavení prostředí
+- [Testování](/vyvojari/testovani) — testy, coverage, CI
+- [Přidání nového nástroje](/vyvojari/pridani-nastroje) — krok za krokem
+- [Styl kódu](/vyvojari/styl-kodu) — konvence a linting
+- [Deployment](/vyvojari/deployment) — Docker, Vercel, nasazení

@@ -1,0 +1,31 @@
+# Začínáme s CzechMedMCP
+
+CzechMedMCP je MCP server, který zpřístupňuje **60 biomedicínských a zdravotnických nástrojů** pro AI asistenty. Funguje lokálně i vzdáleně.
+
+## Co budete potřebovat
+
+- **Python 3.10+** (doporučeno přes [uv](https://docs.astral.sh/uv/))
+- **AI klient** — Claude Desktop, Cursor, VS Code nebo jiný MCP-kompatibilní klient
+- **Volitelně**: API klíče pro NCI, OncoKB (české zdroje API klíče nevyžadují)
+
+## Jak to funguje
+
+```
+AI asistent (Claude, Cursor, ...)
+        ↓ MCP protokol
+  CzechMedMCP server
+        ↓ HTTP/cache/retry
+  České a světové API
+  (SUKL, MKN-10, PubMed, ...)
+```
+
+1. AI asistent pošle požadavek přes MCP protokol
+2. CzechMedMCP zpracuje dotaz, použije cache a retry logiku
+3. Vrátí strukturovaná data v markdown formátu
+
+## Další kroky
+
+- [Instalace](/zaciname/instalace) — nainstalujte CzechMedMCP
+- [Claude Desktop](/zaciname/claude-desktop) — připojte k Claude
+- [API klíče](/zaciname/api-klice) — nastavte volitelné klíče
+- [První dotaz](/zaciname/prvni-dotaz) — vyzkoušejte první dotaz

@@ -1,0 +1,59 @@
+# Globální biomedicínské nástroje (37)
+
+Tyto nástroje propojují AI asistenty se světovými biomedicínskými databázemi.
+
+## Články (2 nástroje)
+
+| Nástroj | Popis |
+|---------|-------|
+| `search` (router) | Unifikované vyhledávání článků — PubMed, PubTator3 |
+| `fetch` (router) | Načtení detailu článku podle PMID |
+
+**Zdroje**: PubMed (30M+ článků), PubTator3 (rozpoznávání entit), bioRxiv, Europe PMC.
+
+## Klinické studie (6 nástrojů)
+
+| Nástroj | Popis |
+|---------|-------|
+| `search_trials` | Vyhledávání v ClinicalTrials.gov |
+| `get_trial` | Detail klinické studie podle NCT ID |
+| `search_nci_trials` | NCI Cancer Trials API |
+| `get_nci_trial` | Detail NCI studie |
+| `search_nci_interventions` | Vyhledávání intervencí NCI |
+| `search_nci_organizations` | Vyhledávání organizací NCI |
+
+## Genomické varianty (3 nástroje)
+
+| Nástroj | Popis |
+|---------|-------|
+| `search_variants` | MyVariant.info — anotace variant |
+| `get_variant` | Detail varianty (ClinVar, gnomAD, COSMIC) |
+| `predict_variant_effects` | AlphaGenome — predikce efektů na regulaci genů |
+
+## BioThings ekosystém (3 nástroje)
+
+| Nástroj | Popis |
+|---------|-------|
+| `get_gene` | MyGene.info — informace o genu |
+| `get_disease` | MyDisease.info — informace o nemoci |
+| `get_drug` | MyChem.info — informace o léčivu |
+
+## OpenFDA (6 nástrojů)
+
+| Nástroj | Popis |
+|---------|-------|
+| `search_adverse_events` | Nežádoucí účinky léčiv |
+| `get_adverse_event` | Detail nežádoucího účinku |
+| `search_drug_labels` | Labeling léčiv (FDA) |
+| `get_drug_label` | Detail labelingu |
+| `search_recalls` | Stahování léčiv z trhu |
+| `get_recall` | Detail stahování |
+
+## Další nástroje
+
+| Nástroj | Popis |
+|---------|-------|
+| `search` (router) | Unifikovaný dispatcher pro 16 domén |
+| `fetch` (router) | Unifikovaný fetch dispatcher |
+| `think` | Sekvenční myšlení pro složité analýzy |
+| `get_metrics` | Výkonnostní metriky serveru |

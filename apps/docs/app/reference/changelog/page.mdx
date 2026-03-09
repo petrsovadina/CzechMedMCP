@@ -1,0 +1,39 @@
+# Changelog
+
+## v0.7.3 (aktuální)
+
+Fork [genomoncology/biomcp](https://github.com/genomoncology/biomcp) v0.7.2 rozšířený o české zdravotnické zdroje.
+
+### Nové funkce
+
+- **23 českých zdravotnických nástrojů** — SUKL, MKN-10, NRPZS, SZV, VZP
+- **3 workflow nástroje** — profil léku, diagnostická podpora, odesílání
+- **České domény v routeru** — SUKL, MKN-10, NRPZS, SZV integrovány do unified search/fetch
+- **In-memory cache** pro MKN-10 a SZV data
+- **Fuzzy matching** s transparentní diakritikou
+- **SPC/PIL HTML scraping** s lxml a section filtering
+- **.env.example** pro dokumentaci proměnných prostředí
+
+### Přejmenování nástrojů (v2.1 spec)
+
+- `czechmed_search_drug` → `czechmed_search_medicine`
+- `czechmed_get_drug_detail` → `czechmed_get_medicine_detail`
+- `czechmed_browse_classification` → `czechmed_browse_diagnosis`
+- `czechmed_search_provider` → `czechmed_search_providers`
+- `czechmed_search_procedure` → `czechmed_search_procedures`
+- `czechmed_get_codebooks` → `czechmed_get_nrpzs_codebooks`
+- `czechmed_get_vzp_reimbursement` → `czechmed_get_drug_reimbursement`
+- `czechmed_diagnosis_assistant` → `czechmed_diagnosis_assist`
+- `czechmed_referral_assistant` → `czechmed_referral_assist`
+
+### Technické změny
+
+- Deduplikace cBioPortal klientů
+- Refaktoring konstant do `constants.py`
+- SUKL search paralelizace
+- Extrakce router handlerů do `router_handlers.py`
+- Odstranění dead code a 600+ duplicitních souborů
+
+## Upstream v0.7.2
+
+Poslední Python release z [genomoncology/biomcp](https://github.com/genomoncology/biomcp).

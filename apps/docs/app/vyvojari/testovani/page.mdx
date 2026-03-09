@@ -1,0 +1,47 @@
+# Testování
+
+## Typy testů
+
+| Adresář | Typ | Popis |
+|---------|-----|-------|
+| `tests/tdd/` | Unit | Mockované HTTP odpovědi |
+| `tests/czech/` | Unit | České moduly (offline) |
+| `tests/bdd/` | BDD | Feature testy (pytest-bdd) |
+| `tests/integration/` | Integrační | Live API volání |
+| `tests/czech_integration/` | Integrační | Live české API |
+
+## Spuštění
+
+```bash
+# Všechny testy (paralelně)
+uv run python -m pytest -x --ff -n auto --dist loadscope
+
+# Jeden soubor
+uv run python -m pytest tests/tdd/test_router.py
+
+# Jeden test
+uv run python -m pytest tests/tdd/test_router.py -k "test_name"
+
+# Pouze unit testy
+uv run python -m pytest -m "not integration"
+
+# Pouze integrační testy
+uv run python -m pytest -m "integration"
+```
+
+## Konvence
+
+- `asyncio_mode = "auto"` — async testy běží bez `@pytest.mark.asyncio`
+- Integrační testy: `@pytest.mark.integration`
+- Fixtury: `tests/data/` — statické JSON soubory
+- Mockování: `httpx` responses pro offline testy
+
+## Regresní test
+
+`tests/tdd/test_mcp_integration.py` ověřuje přesně **60 registrovaných nástrojů**. Při přidání nového nástroje aktualizujte tento počet.
+
+## Kontrola kvality
+
+```bash
+make check  # ruff + pre-commit + mypy + deptry
+```

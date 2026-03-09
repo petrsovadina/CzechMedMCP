@@ -164,7 +164,7 @@ async def convert_query_to_nci(query: TrialQuery) -> dict[str, Any]:
     """
     Convert a TrialQuery object to NCI CTS API parameters.
 
-    Maps BioMCP's TrialQuery fields to NCI's parameter structure.
+    Maps CzechMedMCP's TrialQuery fields to NCI's parameter structure.
     """
     params: dict[str, Any] = {}
 

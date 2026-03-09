@@ -1,4 +1,4 @@
-"""BioMCP Command Line Interface for clinical trials."""
+"""CzechMedMCP Command Line Interface for clinical trials."""
 
 import asyncio
 from typing import Annotated

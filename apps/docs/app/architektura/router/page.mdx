@@ -1,0 +1,40 @@
+# Router a handlery
+
+## Unifikované nástroje
+
+`router.py` obsahuje dva unifikované nástroje jako dispatcher pro 16 domén:
+
+- `search` — vyhledávání napříč doménami
+- `fetch` — načtení detailu z konkrétní domény
+
+## Podporované domény
+
+| Doména | Search | Fetch |
+|--------|--------|-------|
+| articles | ano | ano |
+| trials | ano | ano |
+| variants | ano | ano |
+| genes | — | ano |
+| diseases | — | ano |
+| drugs | — | ano |
+| adverse_events | ano | ano |
+| drug_labels | ano | ano |
+| recalls | ano | ano |
+| nci_trials | ano | ano |
+| nci_organizations | ano | — |
+| nci_interventions | ano | — |
+| sukl | ano | ano |
+| mkn10 | ano | ano |
+| nrpzs | ano | ano |
+| szv | ano | ano |
+
+## Extrakce handlerů
+
+Doménově specifická logika je extrahována do `router_handlers.py`:
+- `handle_article_search()`
+- `handle_trial_search()`
+- `handle_variant_search()`
+- `handle_nci_*_search()`
+- České handlery
+
+Router funkce (`search` ~733 řádků, `fetch` ~926 řádků) jsou označeny `# noqa: C901`. Budoucí refaktoring do dispatch table je plánovaný.

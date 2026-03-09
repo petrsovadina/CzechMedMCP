@@ -1,0 +1,55 @@
+# Deployment
+
+## Lokální spuštění
+
+```bash
+uv run biomcp run
+```
+
+## Docker
+
+```bash
+docker compose up -d
+```
+
+Dockerfile je v kořenovém adresáři repozitáře.
+
+## Claude Desktop
+
+Viz [Připojení k Claude Desktop](/zaciname/claude-desktop).
+
+## MCP Inspector
+
+Pro manuální testování nástrojů:
+
+```bash
+make inspector
+```
+
+Otevře webové rozhraní kde můžete volat jednotlivé nástroje a vidět odpovědi.
+
+## Dokumentace (tento web)
+
+```bash
+cd docs-site
+npm install
+npm run dev      # Lokální vývoj
+npm run build    # Produkční build
+```
+
+### Deploy na Vercel
+
+1. Připojte repozitář na [vercel.com](https://vercel.com)
+2. Nastavte:
+   - **Framework Preset**: Next.js
+   - **Root Directory**: `docs-site`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `out`
+3. Deploy
+
+## PyPI
+
+```bash
+make build
+# Upload přes twine nebo uv publish
+```

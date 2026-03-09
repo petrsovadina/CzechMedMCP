@@ -1,4 +1,4 @@
-"""Health check command for BioMCP CLI.
+"""Health check command for CzechMedMCP CLI.
 
 This module provides a command to check the health of API endpoints and system resources.
 """

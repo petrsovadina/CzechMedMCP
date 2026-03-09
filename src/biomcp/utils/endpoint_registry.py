@@ -1,4 +1,4 @@
-"""Registry for tracking all external HTTP endpoints used by BioMCP."""
+"""Registry for tracking all external HTTP endpoints used by CzechMedMCP."""
 
 from dataclasses import dataclass, field
 from enum import Enum
@@ -620,7 +620,7 @@ class EndpointRegistry:
         }
 
     def get_unique_domains(self) -> set[str]:
-        """Get all unique domains accessed by BioMCP.
+        """Get all unique domains accessed by CzechMedMCP.
 
         Returns:
             Set of unique domain names (e.g., 'api.ncbi.nlm.nih.gov')
@@ -630,13 +630,13 @@ class EndpointRegistry:
     def generate_markdown_report(self) -> str:
         """Generate markdown documentation of all endpoints."""
         lines = [
-            "# Third-Party Endpoints Used by BioMCP",
+            "# Third-Party Endpoints Used by CzechMedMCP",
             "",
             "_This file is auto-generated from the endpoint registry._",
             "",
             "## Overview",
             "",
-            f"BioMCP connects to {len(self.get_unique_domains())} external domains across {len(self._endpoints)} endpoints.",
+            f"CzechMedMCP connects to {len(self.get_unique_domains())} external domains across {len(self._endpoints)} endpoints.",
             "",
             "## Endpoints by Category",
             "",
@@ -704,7 +704,7 @@ class EndpointRegistry:
             "",
             "## Compliance and Privacy",
             "",
-            "All endpoints accessed by BioMCP:",
+            "All endpoints accessed by CzechMedMCP:",
             "",
             "- Use publicly available APIs",
             "- Do not transmit personally identifiable information (PII)",
@@ -713,7 +713,7 @@ class EndpointRegistry:
             "",
             "## Network Control",
             "",
-            "For air-gapped or restricted environments, BioMCP supports:",
+            "For air-gapped or restricted environments, CzechMedMCP supports:",
             "",
             "- Offline mode via `BIOMCP_OFFLINE=true` environment variable",
             "- Custom proxy configuration via standard HTTP(S)\\_PROXY variables",

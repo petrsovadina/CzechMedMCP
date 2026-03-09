@@ -1,0 +1,48 @@
+# Konfigurace
+
+## Proměnné prostředí
+
+Viz `.env.example` v repozitáři:
+
+```bash
+# Volitelné API klíče
+NCBI_API_KEY=           # PubMed — vyšší rate limit
+NCI_API_KEY=            # NCI Cancer Trials API
+ONCOKB_API_KEY=         # OncoKB klinická anotace
+GOOGLE_CLOUD_PROJECT=   # BigQuery logging
+```
+
+## Konstanty
+
+Všechny konfigurační konstanty jsou v `src/biomcp/constants.py`:
+
+| Konstanta | Výchozí | Popis |
+|-----------|---------|-------|
+| `DEFAULT_CACHE_TIMEOUT` | 1 týden | TTL HTTP cache |
+| `CACHE_TTL_DAY` | 1 den | Krátká cache |
+| `CACHE_TTL_HOUR` | 1 hodina | Velmi krátká cache |
+| `CACHE_TTL_MONTH` | 30 dní | Dlouhá cache |
+| `CZECH_HTTP_TIMEOUT` | 30 s | Timeout českých API |
+| `DEFAULT_PAGE_SIZE` | 10 | Výchozí stránkování |
+| `MAX_PAGE_SIZE` | 50 | Maximální stránkování |
+
+## Docker
+
+```yaml
+# docker-compose.yml
+services:
+  czechmedmcp:
+    build: .
+    environment:
+      - NCBI_API_KEY=${NCBI_API_KEY}
+    volumes:
+      - biomcp-cache:/root/.cache/biomcp
+volumes:
+  biomcp-cache:
+```
+
+## Transport
+
+CzechMedMCP podporuje:
+- **stdio** (výchozí) — pro Claude Desktop, Cursor
+- **HTTP/SSE** — pro vzdálený přístup (`biomcp run --transport sse`)

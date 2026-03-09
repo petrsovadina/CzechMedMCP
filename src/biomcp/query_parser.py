@@ -1,4 +1,4 @@
-"""Query parser for unified search language in BioMCP."""
+"""Query parser for unified search language in CzechMedMCP."""
 
 from dataclasses import dataclass
 from enum import Enum

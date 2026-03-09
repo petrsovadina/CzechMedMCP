@@ -1,0 +1,29 @@
+# VZP — Úhrady léčiv (2 nástroje)
+
+Nástroje pro práci s úhradami léčiv od Všeobecné zdravotní pojišťovny.
+
+## czechmed_get_drug_reimbursement
+
+Detailní informace o úhradě konkrétního léčiva — maximální cena, výše úhrady, doplatek pacienta.
+
+```
+Parametry:
+  sukl_code (str)  — SUKL kód přípravku
+```
+
+Vrací: maximální cenu výrobce, úhradu pojišťovny, doplatek pacienta, úhradovou skupinu, podmínky úhrady.
+
+## czechmed_compare_alternatives
+
+Porovnání alternativních přípravků v rámci stejné ATC skupiny — seřazeno podle doplatku.
+
+```
+Parametry:
+  atc_code (str)       — ATC kód skupiny
+  page (int)           — stránka výsledků
+  page_size (int)      — výsledků na stránku
+```
+
+**Příklad**: *„Porovnej alternativy k ibuprofenu (M01AE01)"* → `czechmed_compare_alternatives(atc_code="M01AE01")`
+
+Vrací: seznam přípravků se stejným ATC kódem seřazený od nejnižšího doplatku.

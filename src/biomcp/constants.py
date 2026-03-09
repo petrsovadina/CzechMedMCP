@@ -1,7 +1,7 @@
 """
-Central constants file for BioMCP.
+Central constants file for CzechMedMCP.
 
-This module contains all constants used throughout the BioMCP codebase,
+This module contains all constants used throughout the CzechMedMCP codebase,
 including API URLs, default values, limits, and domain configurations.
 """
 

@@ -1,0 +1,53 @@
+# Připojení k Claude Desktop
+
+Claude Desktop je nejjednodušší způsob, jak používat CzechMedMCP — stačí upravit jeden konfigurační soubor.
+
+## Konfigurace
+
+Otevřete konfigurační soubor Claude Desktop:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Přidejte CzechMedMCP server:
+
+```json
+{
+  "mcpServers": {
+    "czechmedmcp": {
+      "command": "uv",
+      "args": [
+        "run", "--with", "biomcp-python",
+        "biomcp", "run"
+      ]
+    }
+  }
+}
+```
+
+## Ověření
+
+1. Restartujte Claude Desktop
+2. V novém chatu by se měla zobrazit ikona nástrojů (kladívko)
+3. Klikněte na ni — měli byste vidět **60 nástrojů**
+
+## Příklady dotazů
+
+Po připojení můžete Claude rovnou ptát:
+
+- *„Vyhledej lék Ibuprofen v SUKL registru"*
+- *„Najdi kód MKN-10 pro diabetes mellitus 2. typu"*
+- *„Jaké jsou aktivní klinické studie pro melanom s BRAF mutací?"*
+- *„Najdi kardiology v Praze"*
+
+## Další MCP klienti
+
+CzechMedMCP funguje s jakýmkoli MCP-kompatibilním klientem:
+
+- **Cursor** — přidejte do MCP nastavení
+- **VS Code** — přes rozšíření MCP
+- **Claude Code** — automaticky rozpozná MCP server
+
+## Další krok
+
+[Nastavení API klíčů →](/zaciname/api-klice)

@@ -1,0 +1,63 @@
+# Styl kódu
+
+## Pravidla
+
+- **Python 3.10+**
+- Délka řádku: **79 znaků** (ruff)
+- Union syntaxe: `X | Y` (ne `Optional[X]`)
+- Formáter: `ruff format`
+- Linter: `ruff check`
+- Typová kontrola: `mypy`
+
+## Tool funkce
+
+```python
+@mcp_app.tool()
+async def my_tool(
+    param: Annotated[str, Field(description="Popis parametru")],
+) -> str:
+    """Stručný popis nástroje."""
+    result = await _private_impl(param)
+    return render.to_markdown(result)
+```
+
+- Vždy vracejí `str`
+- Parametry s `Annotated[type, Field(description="...")]`
+- Volitelný `@track_performance("biomcp.tool_name")`
+
+## Paginace
+
+```python
+from biomcp.constants import compute_skip
+
+# Správně
+skip = compute_skip(page, page_size)
+
+# Špatně
+skip = (page - 1) * page_size
+```
+
+## Cache
+
+```python
+from biomcp.constants import DEFAULT_CACHE_TIMEOUT, CACHE_TTL_DAY
+
+# Nikdy hardcoded hodnoty
+```
+
+## Timeout
+
+```python
+from biomcp.constants import CZECH_HTTP_TIMEOUT
+
+# Nikdy hardcoded 30.0
+```
+
+## Kontrola
+
+```bash
+uv run ruff check src tests    # Lint
+uv run ruff format src tests   # Formátování
+uv run mypy                    # Typy
+make check                     # Vše najednou
+```

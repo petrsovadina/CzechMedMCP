@@ -1,0 +1,25 @@
+# Hierarchie výjimek
+
+CzechMedMCP definuje stromovou strukturu výjimek v `src/biomcp/exceptions.py`:
+
+```
+BioMCPError
+├── BioMCPSearchError
+│   ├── InvalidDomainError    — neplatná doména
+│   ├── InvalidParameterError — neplatný parametr
+│   ├── SearchExecutionError  — chyba při vyhledávání
+│   └── ResultParsingError    — chyba při zpracování výsledků
+├── QueryParsingError         — chyba parsování dotazu
+└── ThinkingError             — chyba sekvenčního myšlení
+```
+
+## Použití
+
+```python
+from biomcp.exceptions import InvalidDomainError
+
+if domain not in VALID_DOMAINS:
+    raise InvalidDomainError(f"Neplatná doména: {domain}")
+```
+
+Výjimky jsou zachyceny na úrovni tool funkce a vráceny jako error message v markdown formátu.

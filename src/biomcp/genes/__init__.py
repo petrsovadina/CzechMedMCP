@@ -1,4 +1,4 @@
-"""Gene information tools for BioMCP."""
+"""Gene information tools for CzechMedMCP."""
 
 from .getter import get_gene
 

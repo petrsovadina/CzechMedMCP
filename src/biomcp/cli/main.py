@@ -140,7 +140,7 @@ def main_callback(
     ] = False,
 ):
     """
-    BioMCP main application callback. Handles global options like --version and --verbose.
+    CzechMedMCP main application callback. Handles global options like --version and --verbose.
     """
     # Configure logging based on verbose flag
     # Set level for all biomcp loggers

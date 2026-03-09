@@ -1,4 +1,4 @@
-"""Domain-specific result handlers for BioMCP.
+"""Domain-specific result handlers for CzechMedMCP.
 
 This module contains formatting functions for converting raw API responses
 from different biomedical data sources into a standardized format.

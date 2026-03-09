@@ -1,0 +1,77 @@
+# Lokální vývoj
+
+## Prerekvizity
+
+- Python 3.10+
+- [uv](https://docs.astral.sh/uv/) (doporučeno)
+- Git
+
+## Nastavení
+
+```bash
+git clone https://github.com/petrsovadina/biomcp.git
+cd biomcp
+git checkout python-main
+
+# Instalace závislostí
+uv sync --all-extras
+
+# Pre-commit hooks
+uv run pre-commit install
+```
+
+## Spuštění serveru
+
+```bash
+# MCP server (stdio)
+uv run biomcp run
+
+# MCP Inspector (webové rozhraní pro testování)
+make inspector
+```
+
+## Užitečné příkazy
+
+```bash
+# Spuštění všech testů
+uv run python -m pytest -x --ff -n auto --dist loadscope
+
+# Lint
+uv run ruff check src tests
+
+# Typová kontrola
+uv run mypy
+
+# Formátování
+uv run ruff format src tests
+
+# Kompletní kontrola kvality
+make check
+
+# Build wheel
+make build
+```
+
+## Struktura projektu
+
+```
+biomcp/
+├── src/biomcp/          # Zdrojový kód
+│   ├── __init__.py      # Import registrace nástrojů
+│   ├── core.py          # FastMCP singleton
+│   ├── constants.py     # Konstanty
+│   ├── individual_tools.py  # 33 standardních nástrojů
+│   ├── router.py        # Unifikované search/fetch
+│   ├── czech/           # České moduly (23 nástrojů)
+│   ├── articles/        # PubMed/PubTator3
+│   ├── trials/          # ClinicalTrials.gov
+│   ├── variants/        # MyVariant, cBioPortal
+│   └── cli/             # Typer CLI
+├── tests/               # Testy
+│   ├── tdd/             # Unit testy
+│   ├── czech/           # Testy českých modulů
+│   ├── bdd/             # BDD testy
+│   └── integration/     # Live API testy
+├── docs-site/           # Nextra dokumentace
+└── pyproject.toml       # Konfigurace projektu
+```

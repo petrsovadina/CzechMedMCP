@@ -1,7 +1,7 @@
 [project]
 name = "biomcp-python"
 version = "0.7.3"
-description = "Biomedical Model Context Protocol Server with Czech Healthcare Extensions"
+description = "CzechMedMCP: Czech Healthcare MCP Server (fork of BioMCP with Czech medical data sources)"
 authors = [{ name = "Ian Maurer", email = "imaurer@gmail.com" }]
 readme = "README.md"
 keywords = ['python']
@@ -34,9 +34,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://genomoncology.com/biomcp/"
-Repository = "https://github.com/genomoncology/biomcp"
-Documentation = "https://genomoncology.com/biomcp/"
+Homepage = "https://github.com/petrsovadina/biomcp"
+Repository = "https://github.com/petrsovadina/biomcp"
+Documentation = "https://petrsovadina.github.io/biomcp/"
 
 [dependency-groups]
 dev = [

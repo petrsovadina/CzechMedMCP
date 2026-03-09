@@ -1,0 +1,56 @@
+# CzechMedMCP
+
+## Český zdravotnický MCP server
+
+> Open source MCP server propojující AI asistenty s **60 biomedicínskými a zdravotnickými nástroji**.
+> Postaveno na [Model Context Protocol](https://modelcontextprotocol.io/).
+
+---
+
+### Co je CzechMedMCP?
+
+CzechMedMCP je datová vrstva pro AI asistenty lékařů. Propojuje Claude, Cursor, VS Code a další AI nástroje s českými zdravotnickými registry a světovými biomedicínskými databázemi.
+
+### Proč CzechMedMCP?
+
+| Problém | Řešení |
+|---------|--------|
+| LLM nemají přístup k českým zdravotnickým registrům | **23 nástrojů** pro SUKL, MKN-10, NRPZS, SZV, VZP |
+| Lékař potřebuje i světovou evidenci | **37 globálních nástrojů** — PubMed, ClinicalTrials.gov, genomické varianty |
+| Složitá integrace | **MCP protokol** — funguje v Claude Desktop, Cursor, VS Code |
+| Budování infrastruktury od nuly | Produkční infrastruktura s cache, retry, circuit breaker |
+
+### Rychlý start
+
+```bash
+# Instalace
+pip install biomcp-python
+
+# Nebo přes uv (doporučeno)
+uv tool install biomcp-python
+```
+
+```json
+// Claude Desktop — claude_desktop_config.json
+{
+  "mcpServers": {
+    "czechmedmcp": {
+      "command": "uv",
+      "args": ["run", "--with", "biomcp-python", "biomcp", "run"]
+    }
+  }
+}
+```
+
+### 60 nástrojů v jednom serveru
+
+- **SUKL** — registr léčiv, SPC, příbalové informace, dostupnost (8 nástrojů)
+- **MKN-10** — klasifikace nemocí, hierarchie, statistiky (4 nástroje)
+- **NRPZS** — poskytovatelé zdravotních služeb (3 nástroje)
+- **SZV/VZP** — výkony, úhrady, porovnání alternativ (5 nástrojů)
+- **Workflow** — orchestrace diagnostiky a odesílání (3 nástroje)
+- **PubMed** — 30M+ článků s rozpoznáváním entit
+- **ClinicalTrials.gov** — 400K+ klinických studií
+- **Genomické varianty** — MyVariant.info, cBioPortal, OncoKB
+
+[Začít →](/zaciname)  ·  [Katalog nástrojů →](/nastroje)  ·  [GitHub →](https://github.com/petrsovadina/biomcp)

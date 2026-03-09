@@ -1,4 +1,4 @@
-"""Disease information tools for BioMCP."""
+"""Disease information tools for CzechMedMCP."""
 
 from .getter import get_disease
 from .search import search_diseases, get_disease_by_id, search_diseases_with_or

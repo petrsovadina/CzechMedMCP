@@ -1,0 +1,53 @@
+# HTTP pipeline
+
+## Standardní API volání
+
+Globální nástroje volají API přes `http_client.request_api()`:
+
+```
+request_api()
+  → rate limiting
+  → cache lookup (diskcache, SQLite)
+  → circuit breaker check
+  → httpx request
+  → retry (exponenciální backoff)
+  → cache store
+  → Pydantic parse
+```
+
+### Cache
+
+- Backend: diskcache/SQLite (`~/.cache/biomcp/http_cache`)
+- Výchozí TTL: 1 týden (`DEFAULT_CACHE_TIMEOUT`)
+- Další TTL: `CACHE_TTL_DAY`, `CACHE_TTL_HOUR`, `CACHE_TTL_MONTH`
+- Klíč: `generate_cache_key()` — hash URL + parametrů
+
+### Circuit breaker
+
+Chrání před kaskádovým selháním — po opakovaných chybách dočasně zastaví volání.
+
+### Retry
+
+Exponenciální backoff s jitterem pro přechodné chyby (5xx, timeout).
+
+## České moduly
+
+České moduly (`czech/`) používají `httpx.AsyncClient` přímo, ale sdílejí cache infrastrukturu:
+
+```python
+from biomcp.czech.utils import generate_cache_key, cache_response, get_cached_response
+
+# Kontrola cache
+cached = await get_cached_response(cache_key)
+if cached:
+    return cached
+
+# HTTP volání
+async with httpx.AsyncClient(timeout=CZECH_HTTP_TIMEOUT) as client:
+    response = await client.get(url)
+
+# Uložení do cache
+await cache_response(cache_key, response_data)
+```
+
+Timeout: `CZECH_HTTP_TIMEOUT` z `constants.py` (30 sekund).

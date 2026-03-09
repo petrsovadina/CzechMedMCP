@@ -1,0 +1,69 @@
+# Přidání nového nástroje
+
+Krok za krokem, jak přidat nový nástroj do CzechMedMCP.
+
+## 1. Implementace
+
+Vytvořte privátní funkci v doménovém subpackage:
+
+```python
+# src/biomcp/czech/muj_modul/search.py
+async def _search_my_data(query: str, page: int = 1) -> dict:
+    """Implementace vyhledávání."""
+    # ... API volání, zpracování dat
+    return result
+```
+
+## 2. Registrace nástroje
+
+Přidejte registraci do `czech_tools.py` (české) nebo `individual_tools.py` (globální):
+
+```python
+# src/biomcp/czech/czech_tools.py
+@mcp_app.tool()
+async def czechmed_my_tool(
+    query: Annotated[str, Field(description="Hledaný výraz")],
+    page: Annotated[int, Field(description="Stránka", default=1)],
+) -> str:
+    """Popis nástroje pro AI asistenta."""
+    result = await _search_my_data(query, page)
+    return format_czech_response(result)
+```
+
+## 3. CLI příkaz
+
+```python
+# src/biomcp/cli/my_module.py
+@app.command()
+def search(query: str):
+    result = asyncio.run(_search_my_data(query))
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+```
+
+## 4. Aktualizace počtu nástrojů
+
+V `tests/tdd/test_mcp_integration.py` změňte:
+
+```python
+assert len(tools) == 61  # bylo 60
+```
+
+## 5. Registrace endpointů
+
+Přidejte do `utils/endpoint_registry.py`.
+
+## 6. Testy
+
+```python
+# tests/tdd/test_my_tool.py — unit test s mockem
+# tests/integration/test_my_tool.py — live API test
+```
+
+## Konvence
+
+- Název: `czechmed_` prefix pro české nástroje
+- Návratový typ: vždy `str` (markdown)
+- Parametry: `Annotated[type, Field(description="...")]`
+- Paginace: `compute_skip(page, page_size)` z `constants.py`
+- Cache TTL: konstanty z `constants.py`
+- Timeout: `CZECH_HTTP_TIMEOUT` pro české API

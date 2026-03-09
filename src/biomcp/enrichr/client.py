@@ -3,7 +3,7 @@ Enrichr API client for functional enrichment analysis.
 
 Inspired by gget enrichr (https://github.com/pachterlab/gget).
 Citation: Luebbert & Pachter (2023). Bioinformatics, 39(1), btac836.
-BioMCP directly integrates with Enrichr API rather than using gget as a dependency.
+CzechMedMCP directly integrates with Enrichr API rather than using gget as a dependency.
 
 API Documentation: https://maayanlab.cloud/Enrichr/help#api
 """
@@ -50,7 +50,7 @@ class EnrichrClient:
         self.logger = logger
 
     async def submit_gene_list(
-        self, genes: list[str] | str, description: str = "BioMCP gene list"
+        self, genes: list[str] | str, description: str = "CzechMedMCP gene list"
     ) -> str | None:
         """
         Submit a gene list to Enrichr and get a user_list_id.
@@ -208,7 +208,7 @@ class EnrichrClient:
         self,
         genes: list[str] | str,
         database: str = "pathway",
-        description: str = "BioMCP gene list",
+        description: str = "CzechMedMCP gene list",
     ) -> list[EnrichmentTerm] | None:
         """
         Perform enrichment analysis in one step.

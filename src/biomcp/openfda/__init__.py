@@ -1,5 +1,5 @@
 """
-OpenFDA integration for BioMCP.
+OpenFDA integration for CzechMedMCP.
 
 Provides access to FDA drug labels, adverse events, device data,
 drug approvals, recalls, and shortage information.

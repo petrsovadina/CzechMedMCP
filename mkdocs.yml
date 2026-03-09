@@ -1,8 +1,8 @@
-site_name: BioMCP
+site_name: CzechMedMCP
 repo_url: https://github.com/petrsovadina/biomcp
 site_description: Biomedicínský MCP server s českými zdravotnickými rozšířeními
 site_author: Petr Sovadina
-edit_uri: edit/main/docs/
+edit_uri: edit/python-main/docs/
 repo_name: petrsovadina/biomcp
 copyright: Fork projektu <a href="https://github.com/genomoncology/biomcp">genomoncology/biomcp</a>.
 
@@ -141,11 +141,11 @@ extra:
     - property: og:type
       content: website
     - property: og:title
-      content: BioMCP - Biomedicínský MCP server s českými rozšířeními
+      content: CzechMedMCP - Český zdravotnický MCP server
     - property: og:description
-      content: AI nástroj pro biomedicínský výzkum — PubMed, ClinicalTrials.gov, genomická data a české zdravotnické API
+      content: CzechMedMCP — AI nástroj pro biomedicínský výzkum s českými zdravotnickými zdroji
     - name: keywords
-      content: biomedical, MCP, AI, PubMed, clinical trials, genomics, SUKL, MKN-10, české zdravotnictví
+      content: CzechMedMCP, biomedical, MCP, AI, PubMed, clinical trials, genomics, SUKL, MKN-10, české zdravotnictví
 
 extra_css:
   - stylesheets/extra.css

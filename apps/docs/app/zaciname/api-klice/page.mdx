@@ -1,0 +1,45 @@
+# API klíče
+
+CzechMedMCP funguje bez jakýchkoli API klíčů — české zdravotnické zdroje (SUKL, MKN-10, NRPZS, SZV, VZP) jsou veřejně přístupné.
+
+Volitelné klíče rozšiřují přístup ke globálním biomedicínským zdrojům.
+
+## Volitelné klíče
+
+| Proměnná | Zdroj | K čemu |
+|----------|-------|--------|
+| `NCBI_API_KEY` | [NCBI](https://www.ncbi.nlm.nih.gov/account/) | PubMed — vyšší rate limit |
+| `NCI_API_KEY` | [NCI CTAPI](https://api-register.cancer.gov/) | NCI klinické studie — rozšířené vyhledávání |
+| `ONCOKB_API_KEY` | [OncoKB](https://www.oncokb.org/apiAccess) | OncoKB — klinická anotace variant |
+| `GOOGLE_CLOUD_PROJECT` | [Google Cloud](https://console.cloud.google.com/) | BigQuery logging (volitelné) |
+
+## Nastavení
+
+Vytvořte soubor `.env` v kořenovém adresáři projektu:
+
+```bash
+# .env
+NCBI_API_KEY=váš_klíč
+NCI_API_KEY=váš_klíč
+ONCOKB_API_KEY=váš_klíč
+```
+
+Nebo nastavte proměnné prostředí:
+
+```bash
+export NCBI_API_KEY="váš_klíč"
+```
+
+## Bez klíčů
+
+Bez klíčů máte plný přístup k:
+
+- Všem 23 českým nástrojům (SUKL, MKN-10, NRPZS, SZV, VZP)
+- PubMed (s nižším rate limitem)
+- ClinicalTrials.gov
+- MyVariant.info, MyGene.info, MyDisease.info, MyChem.info
+- cBioPortal
+
+## Další krok
+
+[Vyzkoušejte první dotaz →](/zaciname/prvni-dotaz)

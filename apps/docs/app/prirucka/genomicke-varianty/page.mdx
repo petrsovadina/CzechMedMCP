@@ -1,0 +1,40 @@
+# Genomické varianty
+
+## Vyhledání variant
+
+> *Najdi patogenní varianty genu TP53.*
+
+```bash
+biomcp variant search --gene TP53 --significance pathogenic
+```
+
+Zdroje: MyVariant.info, ClinVar, gnomAD, COSMIC.
+
+## Detail varianty
+
+> *Ukaž mi detail varianty BRAF V600E.*
+
+Vrací: klinický význam (ClinVar), frekvenci v populaci (gnomAD), výskyt v nádorech (COSMIC), terapeutické implikace.
+
+## Predikce efektů (AlphaGenome)
+
+> *Jaký efekt má varianta chr7:140453136:A>T na regulaci genů?*
+
+AlphaGenome predikuje dopad variant na:
+- Expresi genů
+- Strukturu chromatinu
+- Vazebná místa transkripčních faktorů
+
+## Onkologická data (cBioPortal)
+
+CzechMedMCP automaticky obohacuje výsledky o data z cBioPortal:
+
+- Frekvence mutací napříč studiemi
+- Ko-výskyt s dalšími mutacemi
+- Profily mutací pro konkrétní geny
+
+## BioThings ekosystém
+
+> *Jaké jsou funkce genu BRCA1?*
+> *Jaké léky cílí na EGFR?*
+> *Jaké geny jsou spojeny s Alzheimerovou chorobou?*

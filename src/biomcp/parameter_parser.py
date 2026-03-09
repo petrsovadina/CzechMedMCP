@@ -1,4 +1,4 @@
-"""Parameter parsing and validation for BioMCP."""
+"""Parameter parsing and validation for CzechMedMCP."""
 
 import json
 import logging

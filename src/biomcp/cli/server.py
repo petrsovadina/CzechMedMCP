@@ -142,7 +142,7 @@ def run_server(
         ),
     ] = 8000,
 ):
-    """Run the BioMCP server with selected transport mode."""
+    """Run the CzechMedMCP server with selected transport mode."""
     if mode == ServerMode.STDIO:
         run_stdio_server()
     else:

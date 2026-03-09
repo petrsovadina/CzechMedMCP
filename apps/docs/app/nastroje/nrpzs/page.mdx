@@ -1,0 +1,38 @@
+# NRPZS — Poskytovatelé zdravotních služeb (3 nástroje)
+
+Nástroje pro vyhledávání v Národním registru poskytovatelů zdravotních služeb.
+
+## czechmed_search_providers
+
+Vyhledávání poskytovatelů podle lokality, odbornosti a formy péče.
+
+```
+Parametry:
+  city (str|None)         — město
+  region (str|None)       — kraj
+  specialty (str|None)    — odbornost (kardiologie, neurologie, ...)
+  care_form (str|None)    — forma péče (ambulantní, lůžková, ...)
+  name (str|None)         — název poskytovatele
+  page (int)              — stránka výsledků
+  page_size (int)         — výsledků na stránku
+```
+
+**Příklad**: *„Najdi kardiology v Praze"* → `czechmed_search_providers(city="Praha", specialty="kardiologie")`
+
+## czechmed_get_provider_detail
+
+Kompletní profil poskytovatele včetně pracovišť, kontaktů a oprávnění.
+
+```
+Parametry:
+  provider_id (str)  — ID poskytovatele z NRPZS
+```
+
+## czechmed_get_nrpzs_codebooks
+
+Číselníky oborů, forem péče a druhů péče — užitečné pro zjištění validních hodnot parametrů.
+
+```
+Parametry:
+  codebook_type (str)  — typ číselníku: "specialty", "care_form", "care_type"
+```

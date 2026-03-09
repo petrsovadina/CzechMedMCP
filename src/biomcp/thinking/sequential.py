@@ -1,4 +1,4 @@
-"""Sequential thinking module for BioMCP."""
+"""Sequential thinking module for CzechMedMCP."""
 
 from typing import Annotated
 

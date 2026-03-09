@@ -1,4 +1,4 @@
-"""Rate limiting implementation for BioMCP API calls."""
+"""Rate limiting implementation for CzechMedMCP API calls."""
 
 import asyncio
 import time

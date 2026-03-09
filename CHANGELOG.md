@@ -1,6 +1,8 @@
-# Changelog
+# Changelog — CzechMedMCP
 
-All notable changes to the BioMCP project will be documented in this file.
+> CzechMedMCP je fork [BioMCP](https://github.com/genomoncology/biomcp). Historické záznamy pod v0.7.2 pocházejí z původního projektu BioMCP.
+
+All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -444,7 +446,7 @@ Note: Initial NCI integration release - see v0.6.3 for the full implementation.
 - Input validation using Pydantic models
 - Safe string handling in all API calls
 
-[Unreleased]: https://github.com/genomoncology/biomcp/compare/v0.6.6...HEAD
+[Unreleased]: https://github.com/petrsovadina/biomcp/compare/v0.6.6...HEAD
 [0.6.6]: https://github.com/genomoncology/biomcp/releases/tag/v0.6.6
 [0.6.5]: https://github.com/genomoncology/biomcp/releases/tag/v0.6.5
 [0.6.4]: https://github.com/genomoncology/biomcp/releases/tag/v0.6.4

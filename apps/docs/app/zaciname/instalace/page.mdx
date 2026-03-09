@@ -1,0 +1,56 @@
+# Instalace
+
+## Doporučený způsob (uv)
+
+[uv](https://docs.astral.sh/uv/) je moderní Python package manager — rychlý a spolehlivý.
+
+```bash
+# Instalace uv (pokud nemáte)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Instalace CzechMedMCP jako CLI nástroj
+uv tool install biomcp-python
+
+# Ověření
+biomcp --help
+```
+
+## Alternativa: pip
+
+```bash
+pip install biomcp-python
+```
+
+## Pro vývojáře (editovatelná instalace)
+
+```bash
+git clone https://github.com/petrsovadina/biomcp.git
+cd biomcp
+git checkout python-main
+uv sync --all-extras
+uv run pre-commit install
+```
+
+## Ověření instalace
+
+```bash
+# Spuštění serveru
+biomcp run
+
+# Nebo přes uv
+uv run biomcp run
+```
+
+Server se spustí na stdio transportu a čeká na MCP klienta.
+
+## Docker
+
+```bash
+docker compose up -d
+```
+
+Viz `docker-compose.yml` v repozitáři pro konfiguraci.
+
+## Další krok
+
+[Připojení k Claude Desktop →](/zaciname/claude-desktop)

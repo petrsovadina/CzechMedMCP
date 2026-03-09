@@ -1,0 +1,34 @@
+# Klinické studie
+
+## Vyhledávání v ClinicalTrials.gov
+
+> *Najdi aktivní klinické studie pro melanom s BRAF mutací.*
+
+```bash
+biomcp trial search --condition "melanoma" --status RECRUITING
+```
+
+## Filtrování
+
+- **Podmínka**: `--condition "lung cancer"`
+- **Stav**: `--status RECRUITING` (RECRUITING, COMPLETED, ACTIVE_NOT_RECRUITING, ...)
+- **Fáze**: `--phase "Phase 3"`
+- **Lokalita**: `--latitude 50.08 --longitude 14.43 --distance 100` (Praha, 100 km)
+
+## NCI Cancer Trials API
+
+Pro rozšířené vyhledávání onkologických studií (vyžaduje `NCI_API_KEY`):
+
+> *Najdi NCI studie pro nemalobuněčný karcinom plic s biomarkerem EGFR.*
+
+## Detail studie
+
+> *Ukaž mi detail studie NCT04236687.*
+
+Vrací: název, popis, kritéria způsobilosti, kontakty, lokality, intervence a endpointy.
+
+## Vyhledání organizací a intervencí
+
+> *Najdi NCI organizace provádějící studie v Evropě.*
+
+> *Jaké intervence se používají ve studiích karcinomu prsu?*

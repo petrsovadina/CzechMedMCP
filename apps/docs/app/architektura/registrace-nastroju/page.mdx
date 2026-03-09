@@ -1,0 +1,45 @@
+# Registrace nástrojů
+
+## Jak se nástroje registrují
+
+CzechMedMCP používá dekorátor `@mcp_app.tool()` z FastMCP frameworku. Každý nástroj je async funkce vracející `str` (markdown).
+
+```python
+from biomcp.core import mcp_app
+from typing import Annotated
+from pydantic import Field
+
+@mcp_app.tool()
+async def czechmed_search_medicine(
+    query: Annotated[str, Field(description="Hledaný výraz")]
+) -> str:
+    """Vyhledání léčiv v SUKL registru."""
+    result = await _search_medicine(query)
+    return render.to_markdown(result)
+```
+
+## Konvence
+
+- Všechny tool funkce vracejí `str` — markdown přes `render.to_markdown()` nebo `json.dumps()`
+- Parametry používají `Annotated[type, Field(description="...")]` pro MCP schéma
+- Volitelný dekorátor `@track_performance()` pro monitoring
+- Paginace: `compute_skip(page, page_size)` z `constants.py`
+
+## Kde se registrují
+
+| Skupina | Soubor | Počet |
+|---------|--------|-------|
+| Standardní | `src/biomcp/individual_tools.py` | 33 |
+| České | `src/biomcp/czech/czech_tools.py` | 23 |
+| Router | `src/biomcp/router.py` | 2 |
+| Think | `src/biomcp/thinking_tool.py` | 1 |
+| Metrics | `src/biomcp/metrics_handler.py` | 1 |
+
+## Přidání nového nástroje
+
+1. Implementace v doménovém subpackage (`_my_tool()`)
+2. Registrace v `individual_tools.py` nebo `czech_tools.py`
+3. CLI příkaz v `cli/`
+4. **Aktualizace počtu 60** v `tests/tdd/test_mcp_integration.py`
+5. Registrace v `utils/endpoint_registry.py`
+6. Testy v `tests/tdd/` (mockované) + `tests/integration/` (live)

@@ -1,4 +1,4 @@
-"""Authentication module for BioMCP remote server modes."""
+"""Authentication module for CzechMedMCP remote server modes."""
 
 import os
 import secrets

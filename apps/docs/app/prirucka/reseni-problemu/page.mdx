@@ -1,0 +1,73 @@
+# Řešení problémů
+
+## Server se nespustí
+
+### `ModuleNotFoundError: No module named 'biomcp'`
+
+```bash
+# Přeinstalujte balíček
+uv pip install -e .
+# Nebo
+pip install biomcp-python
+```
+
+### `command not found: biomcp`
+
+```bash
+# Ověřte instalaci
+uv tool list | grep biomcp
+# Nebo zkuste přes uv run
+uv run biomcp run
+```
+
+## Claude Desktop nevidí nástroje
+
+1. Ověřte konfiguraci v `claude_desktop_config.json`
+2. Restartujte Claude Desktop
+3. Zkontrolujte, že `uv` je v PATH:
+   ```bash
+   which uv
+   ```
+4. Vyzkoušejte absolutní cestu v konfiguraci:
+   ```json
+   {
+     "mcpServers": {
+       "czechmedmcp": {
+         "command": "/Users/vase_jmeno/.cargo/bin/uv",
+         "args": ["run", "--with", "biomcp-python", "biomcp", "run"]
+       }
+     }
+   }
+   ```
+
+## Pomalé odpovědi
+
+CzechMedMCP cachuje HTTP odpovědi. První dotaz může být pomalší, následné budou rychlejší.
+
+- Cache TTL: 1 týden (výchozí)
+- Umístění: `~/.cache/biomcp/http_cache`
+- Vymazání: `rm -rf ~/.cache/biomcp/`
+
+## Chyby českých zdrojů
+
+### SUKL API neodpovídá
+
+SUKL API může být občas pomalé nebo nedostupné. CzechMedMCP má vestavěný retry s exponenciálním backoffem a circuit breaker.
+
+Timeout: 30 sekund (konfigurovatelný přes `CZECH_HTTP_TIMEOUT`).
+
+### MKN-10 data se nenačítají
+
+MKN-10 data se načítají do paměti při prvním dotazu (~20 MB). Pokud načtení selže, zkuste:
+
+```bash
+# Ověřte konektivitu
+curl -s https://mkn10.uzis.cz/api/ | head -c 100
+```
+
+## Hlášení chyb
+
+Nahlaste problém na [GitHub Issues](https://github.com/petrsovadina/biomcp/issues) s:
+- Verzí CzechMedMCP (`biomcp --version`)
+- Verzí Pythonu (`python --version`)
+- Popisem problému a error logem

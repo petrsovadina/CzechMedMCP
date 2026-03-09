@@ -3,7 +3,7 @@ Enrichr functional enrichment analysis integration.
 
 Inspired by gget enrichr (https://github.com/pachterlab/gget).
 Citation: Luebbert & Pachter (2023). Bioinformatics, 39(1), btac836.
-BioMCP directly integrates with Enrichr API rather than using gget as a dependency.
+CzechMedMCP directly integrates with Enrichr API rather than using gget as a dependency.
 """
 
 from .client import EnrichrClient

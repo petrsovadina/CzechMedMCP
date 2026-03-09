@@ -1,4 +1,4 @@
-"""BioMCP Command Line Interface."""
+"""CzechMedMCP Command Line Interface."""
 
 from .main import app
 

@@ -1,0 +1,46 @@
+# MKN-10 — Klasifikace nemocí (4 nástroje)
+
+Nástroje pro práci s Mezinárodní klasifikací nemocí, 10. revize (česká verze).
+
+## czechmed_search_diagnosis
+
+Fulltextové vyhledávání diagnóz v češtině. Podporuje diakritiku i bez ní (léky = leky).
+
+```
+Parametry:
+  query (str)      — hledaný výraz (název nebo kód)
+  page (int)       — stránka výsledků (default: 1)
+  page_size (int)  — výsledků na stránku (default: 10)
+```
+
+**Příklad**: *„Najdi kód pro diabetes mellitus"* → `czechmed_search_diagnosis(query="diabetes mellitus")`
+
+## czechmed_get_diagnosis_detail
+
+Kompletní detail diagnózy včetně hierarchie, inkluzí a exkluzí.
+
+```
+Parametry:
+  code (str)  — MKN-10 kód (např. "E11", "I25.1")
+```
+
+Vrací: název, definici, nadřazenou kategorii, podkategorie, inkluze, exkluze a poznámky.
+
+## czechmed_browse_diagnosis
+
+Procházení stromu MKN-10 kategorií — od kapitol po jednotlivé kódy.
+
+```
+Parametry:
+  parent_code (str|None)  — kód nadřazené kategorie (None = kořen)
+  level (int|None)        — úroveň hloubky
+```
+
+## czechmed_get_diagnosis_stats
+
+Epidemiologické statistiky k diagnóze — hospitalizace, incidence, prevalence.
+
+```
+Parametry:
+  code (str)  — MKN-10 kód
+```

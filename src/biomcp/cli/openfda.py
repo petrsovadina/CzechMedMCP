@@ -1,5 +1,5 @@
 """
-OpenFDA CLI commands for BioMCP.
+OpenFDA CLI commands for CzechMedMCP.
 """
 
 import asyncio

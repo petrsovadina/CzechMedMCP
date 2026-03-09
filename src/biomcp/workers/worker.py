@@ -1,4 +1,4 @@
-"""Worker implementation for BioMCP."""
+"""Worker implementation for CzechMedMCP."""
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +7,7 @@ from starlette.routing import Route
 
 from .. import mcp_app
 
-app = FastAPI(title="BioMCP Worker", version="0.1.10")
+app = FastAPI(title="CzechMedMCP Worker", version="0.1.10")
 
 # Add CORS middleware
 app.add_middleware(

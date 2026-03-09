@@ -1,0 +1,47 @@
+# České workflow
+
+CzechMedMCP poskytuje 3 orchestrační nástroje, které kombinují české a globální zdroje.
+
+## Profil léku
+
+Jeden dotaz vrátí kompletní přehled o léčivu:
+
+> *Vytvoř kompletní profil léku Metformin.*
+
+CzechMedMCP automaticky:
+1. Vyhledá přípravek v SUKL registru
+2. Načte detail s indikacemi a složením
+3. Ověří dostupnost na trhu
+4. Zjistí úhradu a doplatek
+5. Najde relevantní PubMed články
+
+## Diagnostická podpora
+
+Komplexní diagnostický asistent:
+
+> *Pacient 65 let, bolest na hrudi při námaze, dušnost, otoky kotníků. Jaké diagnózy zvážit?*
+
+CzechMedMCP:
+1. Analyzuje symptomy
+2. Najde odpovídající MKN-10 kódy
+3. Ke každé diagnóze doplní PubMed evidenci
+4. Vrátí strukturovaný diferenciálně-diagnostický rozbor
+
+## Podpora odesílání
+
+Validace diagnózy a vyhledání vhodného specialisty:
+
+> *Odeslání pacienta s E11 ke specialistovi v Ostravě.*
+
+CzechMedMCP:
+1. Validuje MKN-10 kód E11 (Diabetes mellitus 2. typu)
+2. Na základě diagnózy doporučí odbornost (diabetologie/endokrinologie)
+3. Vyhledá poskytovatele v Ostravě s odpovídající odborností
+
+## Kombinace s globálními zdroji
+
+Workflow nástroje lze kombinovat s globálními dotazy:
+
+> *Vytvoř profil léku Metformin a najdi aktivní klinické studie pro metformin u diabetu 2. typu.*
+
+AI asistent automaticky orchestruje volání českých i globálních nástrojů.

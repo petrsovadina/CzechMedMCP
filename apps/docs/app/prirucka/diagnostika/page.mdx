@@ -1,0 +1,51 @@
+# Diagnostická podpora
+
+## Vyhledání diagnózy
+
+Fulltextové vyhledávání v MKN-10 s podporou českého jazyka a diakritiky:
+
+> *Najdi kód MKN-10 pro diabetes mellitus 2. typu.*
+
+Vyhledávání funguje i bez diakritiky — `diabetes` najde stejné výsledky jako `diabétes`.
+
+## Detail diagnózy
+
+> *Ukaž mi detail diagnózy E11 — diabetes mellitus 2. typu.*
+
+Vrací hierarchii (nadřazené a podřazené kategorie), inkluze, exkluze a poznámky.
+
+## Procházení klasifikace
+
+Strom MKN-10 můžete procházet od kořene:
+
+> *Ukaž mi kapitoly MKN-10.*
+
+Nebo od konkrétní kategorie:
+
+> *Jaké podkategorie má E10-E14 (Diabetes mellitus)?*
+
+## Epidemiologické statistiky
+
+> *Jaké jsou statistiky hospitalizací pro diagnózu I25.1?*
+
+## Diagnostický workflow
+
+Nástroj `czechmed_diagnosis_assist` kombinuje MKN-10 s PubMed evidencí:
+
+> *Pacient má bolest na hrudi, dušnost a otoky dolních končetin. Jaké diagnózy přicházejí v úvahu?*
+
+CzechMedMCP:
+1. Vyhledá relevantní MKN-10 kódy
+2. Ke každému kódu najde aktuální PubMed články
+3. Vrátí strukturovaný přehled s evidencí
+
+## Referral workflow
+
+Pro odesílání pacienta ke specialistovi:
+
+> *Potřebuji odeslat pacienta s diagnózou I25.1 ke kardiologovi v Brně.*
+
+CzechMedMCP:
+1. Validuje MKN-10 kód
+2. Doporučí odbornost na základě diagnózy
+3. Najde poskytovatele v dané lokalitě

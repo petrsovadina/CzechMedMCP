@@ -1,0 +1,56 @@
+# Rychlá reference
+
+## Instalace
+
+```bash
+uv tool install biomcp-python
+# nebo
+pip install biomcp-python
+```
+
+## Spuštění
+
+```bash
+biomcp run           # MCP server (stdio)
+biomcp --help        # Nápověda
+```
+
+## Claude Desktop konfigurace
+
+```json
+{
+  "mcpServers": {
+    "czechmedmcp": {
+      "command": "uv",
+      "args": ["run", "--with", "biomcp-python", "biomcp", "run"]
+    }
+  }
+}
+```
+
+## Nástroje — přehled
+
+| Skupina | Prefix | Počet |
+|---------|--------|-------|
+| SUKL | `czechmed_search_medicine`, `czechmed_get_*` | 8 |
+| MKN-10 | `czechmed_search_diagnosis`, `czechmed_get_*` | 4 |
+| NRPZS | `czechmed_search_providers`, `czechmed_get_*` | 3 |
+| SZV | `czechmed_search_procedures`, `czechmed_get_*` | 3 |
+| VZP | `czechmed_get_drug_reimbursement`, `czechmed_compare_*` | 2 |
+| Workflow | `czechmed_drug_profile`, `czechmed_diagnosis_assist`, `czechmed_referral_assist` | 3 |
+| Globální | `search_*`, `get_*`, `search`, `fetch` | 37 |
+
+## Proměnné prostředí
+
+| Proměnná | Povinná | Popis |
+|----------|---------|-------|
+| `NCBI_API_KEY` | Ne | PubMed rate limit |
+| `NCI_API_KEY` | Ne | NCI klinické studie |
+| `ONCOKB_API_KEY` | Ne | OncoKB anotace |
+| `GOOGLE_CLOUD_PROJECT` | Ne | BigQuery logging |
+
+## Cache
+
+- Umístění: `~/.cache/biomcp/http_cache`
+- Výchozí TTL: 1 týden
+- Vymazání: `rm -rf ~/.cache/biomcp/`

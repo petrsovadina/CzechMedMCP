@@ -1,0 +1,51 @@
+# Časté dotazy
+
+## Obecné
+
+### Potřebuji API klíče?
+
+Ne. Všech 23 českých nástrojů funguje bez API klíčů. Volitelné klíče rozšiřují přístup ke globálním zdrojům (NCI, OncoKB). Viz [API klíče](/zaciname/api-klice).
+
+### Jaké AI klienty CzechMedMCP podporuje?
+
+Jakýkoli MCP-kompatibilní klient: Claude Desktop, Cursor, VS Code, Claude Code, a další.
+
+### Je CzechMedMCP zdarma?
+
+Ano. CzechMedMCP je open source pod MIT licencí. České zdroje (SUKL, MKN-10, NRPZS) jsou veřejně přístupné.
+
+### Jak často se data aktualizují?
+
+CzechMedMCP volá API v reálném čase. Data jsou cachována lokálně (výchozí TTL: 1 týden) pro rychlejší odpovědi. Cache lze vyčistit smazáním `~/.cache/biomcp/`.
+
+## České nástroje
+
+### Podporuje vyhledávání diakritiku?
+
+Ano. Vyhledávání je transparentní vůči diakritice — `leky` najde stejné výsledky jako `léky`.
+
+### Kolik nástrojů CzechMedMCP poskytuje?
+
+60 nástrojů celkem: 23 českých zdravotnických + 37 globálních biomedicínských.
+
+### Které české zdroje pokrýváte?
+
+- **SUKL** — Státní ústav pro kontrolu léčiv (léčiva, SPC, PIL)
+- **MKN-10** — Mezinárodní klasifikace nemocí (česká verze)
+- **NRPZS** — Národní registr poskytovatelů zdravotních služeb
+- **SZV** — Seznam zdravotních výkonů
+- **VZP** — Úhrady ze zdravotního pojištění
+
+## Technické
+
+### Na jakém portu server běží?
+
+CzechMedMCP používá stdio transport (ne HTTP port). Komunikace probíhá přes standardní vstup/výstup.
+
+### Kde se ukládá cache?
+
+V `~/.cache/biomcp/http_cache` (SQLite databáze přes diskcache).
+
+### Jak spustím jen české nástroje?
+
+Nelze — CzechMedMCP registruje všech 60 nástrojů najednou. AI klient si sám vybere relevantní nástroje podle kontextu.

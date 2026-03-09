@@ -1,0 +1,45 @@
+# První dotaz
+
+## Přes Claude Desktop
+
+Otevřete Claude Desktop a zeptejte se:
+
+> *Vyhledej lék Ibuprofen v SUKL registru a ukaž mi jeho dostupnost.*
+
+Claude automaticky použije nástroje `czechmed_search_medicine` a `czechmed_check_availability`.
+
+## Přes CLI
+
+```bash
+# Vyhledání léku
+biomcp czech sukl search --query "Ibuprofen"
+
+# Vyhledání diagnózy
+biomcp czech mkn10 search --query "diabetes mellitus"
+
+# Vyhledání poskytovatele
+biomcp czech nrpzs search --city "Praha" --specialty "kardiologie"
+
+# Globální vyhledávání
+biomcp article search --gene BRAF --disease melanoma
+biomcp trial search --condition "lung cancer" --status RECRUITING
+```
+
+## Ukázkové scénáře
+
+### Scénář 1: Lékař hledá informace o léku
+
+> *Najdi v SUKL registru přípravky s účinnou látkou metformin. U prvního výsledku zobraz SPC sekci „Dávkování" a zkontroluj dostupnost.*
+
+### Scénář 2: Diagnostická podpora
+
+> *Pacient má bolest na hrudi, dušnost a otoky dolních končetin. Jaké diagnózy MKN-10 by mohly odpovídat? Najdi ke každé diagnóze relevantní články v PubMed.*
+
+### Scénář 3: Odeslání pacienta
+
+> *Potřebuji odeslat pacienta s diagnózou I25.1 ke kardiologovi v Brně. Najdi vhodné poskytovatele.*
+
+## Co dál?
+
+- [Katalog nástrojů](/nastroje) — kompletní přehled všech 60 nástrojů
+- [Příručka](/prirucka) — podrobné návody a workflow

@@ -1,0 +1,37 @@
+# SZV — Seznam zdravotních výkonů (3 nástroje)
+
+Nástroje pro práci se Seznamem zdravotních výkonů.
+
+## czechmed_search_procedures
+
+Vyhledávání zdravotních výkonů podle kódu nebo textu.
+
+```
+Parametry:
+  query (str)      — hledaný výraz (kód výkonu nebo text)
+  page (int)       — stránka výsledků
+  page_size (int)  — výsledků na stránku
+```
+
+**Příklad**: *„Najdi výkon EKG"* → `czechmed_search_procedures(query="EKG")`
+
+## czechmed_get_procedure_detail
+
+Detail výkonu s bodovou hodnotou, podmínkami vykazování a omezeními.
+
+```
+Parametry:
+  code (str)  — kód výkonu
+```
+
+Vrací: název, bodovou hodnotu, odbornost, čas, materiál, omezení frekvence.
+
+## czechmed_calculate_reimbursement
+
+Kalkulace úhrady konkrétního výkonu.
+
+```
+Parametry:
+  code (str)           — kód výkonu
+  insurance_code (str) — kód pojišťovny (default: "111" = VZP)
+```

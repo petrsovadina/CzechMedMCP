@@ -1,10 +1,10 @@
-"""Custom exceptions for BioMCP."""
+"""Custom exceptions for CzechMedMCP."""
 
 from typing import Any
 
 
 class BioMCPError(Exception):
-    """Base exception for all BioMCP errors."""
+    """Base exception for all CzechMedMCP errors."""
 
     def __init__(self, message: str, details: dict[str, Any] | None = None):
         super().__init__(message)

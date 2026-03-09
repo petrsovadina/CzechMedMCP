@@ -1,4 +1,4 @@
-"""Utility modules for BioMCP."""
+"""Utility modules for CzechMedMCP."""
 
 from .query_utils import parse_or_query, contains_or_operator
 

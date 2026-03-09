@@ -1,4 +1,4 @@
-"""Cloudflare Workers module for BioMCP."""
+"""Cloudflare Workers module for CzechMedMCP."""
 
 from .worker import create_worker_app
 

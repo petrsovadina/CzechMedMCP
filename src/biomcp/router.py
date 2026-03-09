@@ -1,4 +1,4 @@
-"""Unified search and fetch tools for BioMCP.
+"""Unified search and fetch tools for CzechMedMCP.
 
 This module provides the main MCP tools for searching and fetching biomedical data
 across different domains (articles, trials, variants) with integrated sequential
