@@ -1,13 +1,11 @@
 """Unit tests for SUKL drug index."""
 
-import asyncio
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
 from biomcp.czech.sukl.drug_index import (
     DrugIndex,
-    DrugIndexEntry,
     _detail_to_entry,
     get_drug_index,
     reset_drug_index,

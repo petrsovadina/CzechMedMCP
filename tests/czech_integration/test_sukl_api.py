@@ -4,7 +4,6 @@ Run with: pytest tests/czech_integration/ -m integration -v
 """
 
 import json
-import time
 
 import pytest
 
