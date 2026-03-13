@@ -863,17 +863,17 @@ async def search(  # noqa: C901
         from biomcp.czech.sukl.search import _sukl_drug_search
 
         query_str = keywords[0] if keywords else query
-        result = await _sukl_drug_search(
+        czech_result: str = await _sukl_drug_search(
             query_str, page, page_size
         )
-        return {"results": [{"content": result}]}
+        return {"results": [{"content": czech_result}]}
 
     elif domain == "mkn_diagnosis":
         from biomcp.czech.mkn.search import _mkn_search
 
         query_str = keywords[0] if keywords else query
-        result = await _mkn_search(query_str, page_size)
-        return {"results": [{"content": result}]}
+        czech_result = await _mkn_search(query_str, page_size)
+        return {"results": [{"content": czech_result}]}
 
     elif domain == "nrpzs_provider":
         from biomcp.czech.nrpzs.search import _nrpzs_search
@@ -881,17 +881,17 @@ async def search(  # noqa: C901
         query_str = keywords[0] if keywords else query
         city = None
         specialty = None
-        result = await _nrpzs_search(
+        czech_result = await _nrpzs_search(
             query_str, city, specialty, page, page_size
         )
-        return {"results": [{"content": result}]}
+        return {"results": [{"content": czech_result}]}
 
     elif domain == "szv_procedure":
         from biomcp.czech.szv.search import _szv_search
 
         query_str = keywords[0] if keywords else query
-        result = await _szv_search(query_str, page_size)
-        return {"results": [{"content": result}]}
+        czech_result = await _szv_search(query_str, page_size)
+        return {"results": [{"content": czech_result}]}
 
     elif domain == "vzp_reimbursement":
         from biomcp.czech.vzp.drug_reimbursement import (
@@ -899,8 +899,10 @@ async def search(  # noqa: C901
         )
 
         query_str = keywords[0] if keywords else query
-        result = await _get_vzp_drug_reimbursement(query_str)
-        return {"results": [{"content": result}]}
+        czech_result = await _get_vzp_drug_reimbursement(
+            query_str
+        )
+        return {"results": [{"content": czech_result}]}
 
     else:
         raise InvalidDomainError(domain, VALID_DOMAINS)
