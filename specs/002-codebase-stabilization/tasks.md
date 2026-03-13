@@ -178,15 +178,15 @@
 
 **Purpose**: Vyčistit zbývající lint warningy, finální verifikace.
 
-- [ ] T025 Opravit ruff C901 warning v `src/biomcp/czech/mkn/parser.py:74` (`_parse_csv` complexity 14 > 10) — extrahovat pomocné funkce nebo přidat `# noqa: C901` s komentářem proč je komplexita akceptovatelná (CSV parser s mnoha sloupci)
+- [x] T025 Opravit ruff C901 warning v `src/biomcp/czech/mkn/parser.py:74` (`_parse_csv` complexity 14 > 10) — extrahovat pomocné funkce nebo přidat `# noqa: C901` s komentářem proč je komplexita akceptovatelná (CSV parser s mnoha sloupci)
 
-- [ ] T026 Finální verifikace — spustit kompletní quality check:
+- [x] T026 Finální verifikace — spustit kompletní quality check:
   - `uv run ruff check src tests` → 0 errors
   - `uv run mypy` → 0 errors
   - `uv run python -m pytest -x --ff -n auto --dist loadscope -m "not integration"` → 713+ passed
   - `wc -l src/biomcp/router.py` → < 1000
 
-- [ ] T027 Aktualizovat CLAUDE.md s finálním stavem — aktualizovat počet řádků router.py, přidat zmínku o `fetch_handlers.py`
+- [x] T027 Aktualizovat CLAUDE.md s finálním stavem — aktualizovat počet řádků router.py, přidat zmínku o `fetch_handlers.py`
 
 ---
 
