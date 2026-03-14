@@ -1,10 +1,12 @@
-# -- Stage 1: Build landing page --
+# -- Stage 1: Build landing page (static export for Docker) --
 FROM node:22-alpine AS web-builder
 WORKDIR /app/web
 COPY apps/web/package.json apps/web/package-lock.json* ./
 RUN npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
 COPY apps/web/ ./
-RUN npm run build
+# Force static export for Docker (Vercel uses its own build)
+RUN sed -i "s/images:/output: 'export', images:/" next.config.mjs \
+    && npm run build
 
 # -- Stage 2: Python MCP server --
 FROM python:3.11-slim AS server
