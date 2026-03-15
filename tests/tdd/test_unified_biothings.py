@@ -33,7 +33,8 @@ class TestUnifiedBioThingsSearch:
                 return GeneInfo(**mock_gene_details)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test gene search
@@ -71,7 +72,8 @@ class TestUnifiedBioThingsSearch:
                 return DrugInfo(**mock_drug_details)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test drug search
@@ -109,7 +111,8 @@ class TestUnifiedBioThingsSearch:
                 return DiseaseInfo(**mock_disease_details)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test disease search
@@ -150,7 +153,8 @@ class TestUnifiedBioThingsFetch:
                 return GeneInfo(**mock_gene_info)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test gene fetch
@@ -183,7 +187,8 @@ class TestUnifiedBioThingsFetch:
                 return DrugInfo(**mock_drug_info)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test drug fetch
@@ -218,7 +223,8 @@ class TestUnifiedBioThingsFetch:
                 return DiseaseInfo(**mock_disease_info)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test disease fetch
@@ -319,7 +325,8 @@ class TestBioThingsErrorCases:
                 raise Exception("API connection failed")
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         # Test that search handles the error gracefully
@@ -337,7 +344,8 @@ class TestBioThingsErrorCases:
                 return []  # No results
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         results = await search(
@@ -358,7 +366,8 @@ class TestBioThingsErrorCases:
                 return None  # Not found
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         result = await fetch(id="INVALID:12345", domain="disease")
@@ -385,7 +394,8 @@ class TestBioThingsErrorCases:
                 return GeneInfo(**mock_gene_details)
 
         monkeypatch.setattr(
-            "biomcp.router.BioThingsClient", MockBioThingsClient
+            "biomcp.integrations.biothings_client.BioThingsClient",
+            MockBioThingsClient,
         )
 
         results = await search(query="", domain="gene", keywords=["673"])

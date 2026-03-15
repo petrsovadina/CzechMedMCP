@@ -6,7 +6,6 @@ Verifies:
 - SC-004: MKN-10 accuracy >= 95% against sample codes
 """
 
-import json
 import time
 from unittest.mock import patch
 
