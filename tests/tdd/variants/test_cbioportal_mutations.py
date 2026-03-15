@@ -141,7 +141,9 @@ class TestCBioPortalMutationSearch:
 
     def test_format_mutation_search_result(self):
         """Test formatting of mutation search results."""
-        from czechmedmcp.variants.cbioportal_mutations import MutationSearchResult
+        from czechmedmcp.variants.cbioportal_mutations import (
+            MutationSearchResult,
+        )
 
         result = MutationSearchResult(
             gene="SRSF2",

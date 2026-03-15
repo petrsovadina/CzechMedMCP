@@ -106,7 +106,9 @@ class TestUnifiedBioThingsSearch:
                 return mock_disease_query
 
             async def _get_disease_by_id(self, disease_id):
-                from czechmedmcp.integrations.biothings_client import DiseaseInfo
+                from czechmedmcp.integrations.biothings_client import (
+                    DiseaseInfo,
+                )
 
                 return DiseaseInfo(**mock_disease_details)
 
@@ -218,7 +220,9 @@ class TestUnifiedBioThingsFetch:
 
         class MockBioThingsClient:
             async def get_disease_info(self, disease_id):
-                from czechmedmcp.integrations.biothings_client import DiseaseInfo
+                from czechmedmcp.integrations.biothings_client import (
+                    DiseaseInfo,
+                )
 
                 return DiseaseInfo(**mock_disease_info)
 

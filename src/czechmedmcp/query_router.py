@@ -279,7 +279,9 @@ async def execute_routing_plan(
 
         elif tool_name == "gene_searcher":
             # For gene search, we'll use the BioThingsClient directly
-            from czechmedmcp.integrations.biothings_client import BioThingsClient
+            from czechmedmcp.integrations.biothings_client import (
+                BioThingsClient,
+            )
 
             client = BioThingsClient()
             query_str = params.get("query", "")
@@ -288,7 +290,9 @@ async def execute_routing_plan(
 
         elif tool_name == "drug_searcher":
             # For drug search, we'll use the BioThingsClient directly
-            from czechmedmcp.integrations.biothings_client import BioThingsClient
+            from czechmedmcp.integrations.biothings_client import (
+                BioThingsClient,
+            )
 
             client = BioThingsClient()
             query_str = params.get("query", "")
@@ -297,7 +301,9 @@ async def execute_routing_plan(
 
         elif tool_name == "disease_searcher":
             # For disease search, we'll use the BioThingsClient directly
-            from czechmedmcp.integrations.biothings_client import BioThingsClient
+            from czechmedmcp.integrations.biothings_client import (
+                BioThingsClient,
+            )
 
             client = BioThingsClient()
             query_str = params.get("query", "")

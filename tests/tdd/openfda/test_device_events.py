@@ -6,7 +6,10 @@ from unittest.mock import patch
 
 import pytest
 
-from czechmedmcp.openfda.device_events import get_device_event, search_device_events
+from czechmedmcp.openfda.device_events import (
+    get_device_event,
+    search_device_events,
+)
 
 
 @pytest.mark.asyncio

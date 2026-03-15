@@ -374,7 +374,9 @@ class TestFileOperationSecurity:
     async def test_atomic_file_operations(self):
         """Test that file operations are atomic."""
 
-        from czechmedmcp.openfda.drug_shortages import _get_cached_shortage_data
+        from czechmedmcp.openfda.drug_shortages import (
+            _get_cached_shortage_data,
+        )
 
         # This should use atomic operations internally
         with patch(
