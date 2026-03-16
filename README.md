@@ -99,11 +99,40 @@ make check
 
 ## Deployment
 
-| Komponenta | Platforma |
-|---|---|
-| MCP Server | [Railway](https://biomcp-production-0eb2.up.railway.app/health) |
-| Landing page | [Vercel](https://web-sovadina.vercel.app) |
-| Dokumentace | [Vercel](https://docs-sovadina.vercel.app) |
+| Komponenta | Platforma | URL |
+|---|---|---|
+| MCP Server | Railway | [/health](https://biomcp-production-0eb2.up.railway.app/health) |
+| Landing page | Vercel | [web-sovadina.vercel.app](https://web-sovadina.vercel.app) |
+| Dokumentace | Vercel | [docs-sovadina.vercel.app](https://docs-sovadina.vercel.app) |
+
+### Docker (lokální)
+
+```bash
+docker compose up --build
+# MCP endpoint: http://localhost:8000/mcp
+# Health:       http://localhost:8000/health
+```
+
+### Railway
+
+Push na `main` spustí auto-deploy (CI musí projít). Konfigurace:
+
+- `Dockerfile` — Python 3.11-slim, `.[worker]` extras
+- `railway.json` — healthcheck na `/health`, restart on failure
+- Env vars: `MCP_MODE=streamable_http`, `PORT` nastavuje Railway automaticky
+
+Ruční deploy:
+
+```bash
+railway up --detach
+```
+
+### Vercel (web + docs)
+
+Obě Next.js aplikace se deployují automaticky z monorepa:
+
+- **Landing page**: root directory `apps/web/`, framework Next.js
+- **Dokumentace**: root directory `apps/docs/`, static export (`output: 'export'`)
 
 ## Licence
 
