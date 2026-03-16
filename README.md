@@ -109,8 +109,3 @@ make check
 ## Licence
 
 MIT — plná svoboda komerčního využití.
-
----
-
-*Postaveno pro [Medevio](https://medevio.com) — AI asistent pro české lékaře.*
-*Založeno na [BioMCP](https://github.com/genomoncology/biomcp) (MIT).*
