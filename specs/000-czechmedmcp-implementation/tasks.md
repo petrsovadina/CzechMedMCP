@@ -1,10 +1,10 @@
 # Tasks: CzechMedMCP Implementation
 
-> **Stav (2026-03-13)**: Fáze 1-11 implementovány (14→23 českých nástrojů).
-> Tool názvy přejmenovány v rámci v2.1 spec (viz kontrakty).
-> Task tracker nebyl průběžně aktualizován — skutečný stav implementace
-> je o dost dále než ukazují checkboxy níže. Viz `specs/002-codebase-stabilization/`
-> pro aktuální stabilizační práce.
+> **Stav (2026-03-16)**: Všech 11 fází implementováno (14→23 českých nástrojů, celkem 60).
+> Spec 001 (DrugIndex) a 002 (stabilizace + rename) merged do python-main.
+> Checkboxy aktualizovány dle auditu — 79/83 hotovo.
+> Zbývá: T015 (dual output retrofit SUKL), T075 (THIRD_PARTY_ENDPOINTS.md),
+> T079 (quickstart validace), T081 (batch/workflow benchmarky).
 
 **Input**: Design documents from `/specs/000-czechmedmcp-implementation/`
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
@@ -98,16 +98,16 @@
 
 ### Implementation for User Story 4
 
-- [ ] T024 [P] [US4] Create `DiagnosisStats`, `AgeGroupStats`, `RegionStats` models in `src/czechmedmcp/czech/mkn/models.py` per data-model.md
-- [ ] T025 [P] [US4] Retrofit dual output to existing MKN-10 tools — update `_mkn_search()`, `_mkn_get()`, `_mkn_browse()` in `src/czechmedmcp/czech/mkn/search.py` to use `format_czech_response()`
-- [ ] T026 [US4] Create `src/czechmedmcp/czech/mkn/stats.py` with `_get_diagnosis_stats(code: str, year: int | None) -> str` — download NZIP open data CSV, filter by MKN-10 code prefix, aggregate by gender/age/region, cache with TTL 7 days
-- [ ] T027 [US4] Register `czechmed_get_diagnosis_stats` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/mkn-tools.md
-- [ ] T028 [US4] Create `DiagnosisAssistantResult` model in `src/czechmedmcp/czech/mkn/models.py` per data-model.md — fields: query, candidates, evidence, disclaimer
-- [ ] T029 [US4] Create `src/czechmedmcp/czech/workflows/diagnosis_assistant.py` with `_diagnosis_assistant(symptoms: str, max_candidates: int) -> str` — orchestrate: search MKN-10 → get detail for top → PubMed evidence via `from czechmedmcp.articles.search import _article_searcher` → assemble with disclaimer, use `asyncio.gather` with `return_exceptions=True`
-- [ ] T030 [US4] Register `czechmed_diagnosis_assistant` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
-- [ ] T031 [P] [US4] Unit test for stats in `tests/czech/test_mkn_stats.py` — mock NZIP CSV response, verify aggregation by gender/age/region
-- [ ] T032 [P] [US4] Unit test for workflow in `tests/czech/test_workflow_diagnosis.py` — mock MKN search + PubMed, verify graceful degradation when PubMed fails, verify disclaimer present
-- [ ] T033 [US4] Update tool counts: `test_tool_registration.py` 16→18, `test_mcp_integration.py` 53→55 (37+18)
+- [x] T024 [P] [US4] Create `DiagnosisStats`, `AgeGroupStats`, `RegionStats` models in `src/czechmedmcp/czech/mkn/models.py` per data-model.md
+- [x] T025 [P] [US4] Retrofit dual output to existing MKN-10 tools — update `_mkn_search()`, `_mkn_get()`, `_mkn_browse()` in `src/czechmedmcp/czech/mkn/search.py` to use `format_czech_response()`
+- [x] T026 [US4] Create `src/czechmedmcp/czech/mkn/stats.py` with `_get_diagnosis_stats(code: str, year: int | None) -> str` — download NZIP open data CSV, filter by MKN-10 code prefix, aggregate by gender/age/region, cache with TTL 7 days
+- [x] T027 [US4] Register `czechmed_get_diagnosis_stats` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/mkn-tools.md
+- [x] T028 [US4] Create `DiagnosisAssistantResult` model in `src/czechmedmcp/czech/mkn/models.py` per data-model.md — fields: query, candidates, evidence, disclaimer
+- [x] T029 [US4] Create `src/czechmedmcp/czech/workflows/diagnosis_assistant.py` with `_diagnosis_assistant(symptoms: str, max_candidates: int) -> str` — orchestrate: search MKN-10 → get detail for top → PubMed evidence via `from czechmedmcp.articles.search import _article_searcher` → assemble with disclaimer, use `asyncio.gather` with `return_exceptions=True`
+- [x] T030 [US4] Register `czechmed_diagnosis_assistant` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
+- [x] T031 [P] [US4] Unit test for stats in `tests/czech/test_mkn_stats.py` — mock NZIP CSV response, verify aggregation by gender/age/region
+- [x] T032 [P] [US4] Unit test for workflow in `tests/czech/test_workflow_diagnosis.py` — mock MKN search + PubMed, verify graceful degradation when PubMed fails, verify disclaimer present
+- [x] T033 [US4] Update tool counts: `test_tool_registration.py` 16→18, `test_mcp_integration.py` 53→55 (37+18)
 
 **Checkpoint**: US4 complete — MKN-10 base + stats + diagnostic assistant workflow functional
 
@@ -121,10 +121,10 @@
 
 ### Implementation for User Story 8
 
-- [ ] T034 [P] [US8] Create `DocumentSection` and `DocumentContent` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
-- [ ] T035 [US8] Enhance `_sukl_pil_getter()` in `src/czechmedmcp/czech/sukl/getter.py` — add HTML scraping of PIL document from `sukl.cz`, parse sections (dosage, contraindications, side_effects, interactions, pregnancy, storage), return content via `format_czech_response()`, fall back to URL-only on parse error
-- [ ] T036 [US8] Enhance `_sukl_spc_getter()` in `src/czechmedmcp/czech/sukl/getter.py` — add HTML scraping of SPC document, parse numbered sections (4.1-4.9, 5.1-5.3, 6.1-6.6), add `section` parameter to tool signature in `czech_tools.py`
-- [ ] T037 [P] [US8] Unit test in `tests/czech/test_sukl_pil_spc.py` — mock HTML responses, verify section parsing, verify fallback to URL on parse error, verify section filter parameter
+- [x] T034 [P] [US8] Create `DocumentSection` and `DocumentContent` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
+- [x] T035 [US8] Enhance `_sukl_pil_getter()` in `src/czechmedmcp/czech/sukl/getter.py` — add HTML scraping of PIL document from `sukl.cz`, parse sections (dosage, contraindications, side_effects, interactions, pregnancy, storage), return content via `format_czech_response()`, fall back to URL-only on parse error
+- [x] T036 [US8] Enhance `_sukl_spc_getter()` in `src/czechmedmcp/czech/sukl/getter.py` — add HTML scraping of SPC document, parse numbered sections (4.1-4.9, 5.1-5.3, 6.1-6.6), add `section` parameter to tool signature in `czech_tools.py`
+- [x] T037 [P] [US8] Unit test in `tests/czech/test_sukl_pil_spc.py` — mock HTML responses, verify section parsing, verify fallback to URL on parse error, verify section filter parameter
 
 **Checkpoint**: US8 complete — PIL/SPC return actual text content with section filtering
 
@@ -138,12 +138,12 @@
 
 ### Implementation for User Story 6
 
-- [ ] T038 [P] [US6] Create `ReimbursementCalculation` model in `src/czechmedmcp/czech/szv/models.py` per data-model.md
-- [ ] T039 [P] [US6] Retrofit dual output to existing SZV tools — update `_szv_search()`, `_szv_get()` in `src/czechmedmcp/czech/szv/search.py` to use `format_czech_response()`
-- [ ] T040 [US6] Create `src/czechmedmcp/czech/szv/reimbursement.py` with `_calculate_reimbursement(code: str, insurance_code: str, count: int) -> str` — lookup procedure point_value, lookup rate from insurance rate table in constants, calculate: unit_price = points × rate, total = unit_price × count, return via `format_czech_response()`
-- [ ] T041 [US6] Register `czechmed_calculate_reimbursement` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/szv-tools.md with insurance_code pattern, default "111"
-- [ ] T042 [P] [US6] Unit test in `tests/czech/test_szv_reimbursement.py` — verify calculation for VZP (111), VoZP (201), invalid insurance code, unknown procedure
-- [ ] T043 [US6] Update tool counts: `test_tool_registration.py` 18→19, `test_mcp_integration.py` 55→56 (37+19)
+- [x] T038 [P] [US6] Create `ReimbursementCalculation` model in `src/czechmedmcp/czech/szv/models.py` per data-model.md
+- [x] T039 [P] [US6] Retrofit dual output to existing SZV tools — update `_szv_search()`, `_szv_get()` in `src/czechmedmcp/czech/szv/search.py` to use `format_czech_response()`
+- [x] T040 [US6] Create `src/czechmedmcp/czech/szv/reimbursement.py` with `_calculate_reimbursement(code: str, insurance_code: str, count: int) -> str` — lookup procedure point_value, lookup rate from insurance rate table in constants, calculate: unit_price = points × rate, total = unit_price × count, return via `format_czech_response()`
+- [x] T041 [US6] Register `czechmed_calculate_reimbursement` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/szv-tools.md with insurance_code pattern, default "111"
+- [x] T042 [P] [US6] Unit test in `tests/czech/test_szv_reimbursement.py` — verify calculation for VZP (111), VoZP (201), invalid insurance code, unknown procedure
+- [x] T043 [US6] Update tool counts: `test_tool_registration.py` 18→19, `test_mcp_integration.py` 55→56 (37+19)
 
 **Checkpoint**: US6 complete — SZV search + detail + reimbursement calculation functional
 
@@ -157,12 +157,12 @@
 
 ### Implementation for User Story 7
 
-- [ ] T044 [P] [US7] Create `DrugReimbursement`, `DrugAlternative`, `AlternativeComparison` models in `src/czechmedmcp/czech/vzp/models.py` per data-model.md
-- [ ] T045 [US7] Repurpose `_vzp_search()` in `src/czechmedmcp/czech/vzp/search.py` — rename to `_get_vzp_drug_reimbursement(sukl_code)`, implement VZP drug price list scraping from `vzp.cz/poskytovatele`, parse HTML, extract reimbursement group/max price/coverage/copay/conditions, return via `format_czech_response()`
-- [ ] T046 [US7] Implement `_compare_alternatives(sukl_code)` in `src/czechmedmcp/czech/vzp/search.py` — get reference drug detail from SÚKL (extract ATC), search SÚKL by ATC → get VZP reimbursement for each → sort by copay, return via `format_czech_response()`
-- [ ] T047 [US7] Update tool registrations in `src/czechmedmcp/czech/czech_tools.py` — rename `czechmed_get_vzp_reimbursement` and `czechmed_compare_alternatives` with signatures per contracts/vzp-tools.md
-- [ ] T048 [P] [US7] Unit test in `tests/czech/test_vzp_drug_reimb.py` — mock VZP HTML + SÚKL API, verify reimbursement parsing, verify alternative sorting by copay, verify savings calculation, verify graceful degradation on VZP HTML change
-- [ ] T049 [US7] Update existing VZP tests in `tests/czech/test_vzp_search.py` to match repurposed module
+- [x] T044 [P] [US7] Create `DrugReimbursement`, `DrugAlternative`, `AlternativeComparison` models in `src/czechmedmcp/czech/vzp/models.py` per data-model.md
+- [x] T045 [US7] Repurpose `_vzp_search()` in `src/czechmedmcp/czech/vzp/search.py` — rename to `_get_vzp_drug_reimbursement(sukl_code)`, implement VZP drug price list scraping from `vzp.cz/poskytovatele`, parse HTML, extract reimbursement group/max price/coverage/copay/conditions, return via `format_czech_response()`
+- [x] T046 [US7] Implement `_compare_alternatives(sukl_code)` in `src/czechmedmcp/czech/vzp/search.py` — get reference drug detail from SÚKL (extract ATC), search SÚKL by ATC → get VZP reimbursement for each → sort by copay, return via `format_czech_response()`
+- [x] T047 [US7] Update tool registrations in `src/czechmedmcp/czech/czech_tools.py` — rename `czechmed_get_vzp_reimbursement` and `czechmed_compare_alternatives` with signatures per contracts/vzp-tools.md
+- [x] T048 [P] [US7] Unit test in `tests/czech/test_vzp_drug_reimb.py` — mock VZP HTML + SÚKL API, verify reimbursement parsing, verify alternative sorting by copay, verify savings calculation, verify graceful degradation on VZP HTML change
+- [x] T049 [US7] Update existing VZP tests in `tests/czech/test_vzp_search.py` to match repurposed module
 
 **Checkpoint**: US7 complete — VZP drug reimbursement + alternative comparison functional
 
@@ -176,16 +176,16 @@
 
 ### Implementation for User Story 5
 
-- [ ] T050 [P] [US5] Create `CodebookItem` and `Codebook` models in `src/czechmedmcp/czech/nrpzs/models.py` per data-model.md
-- [ ] T051 [P] [US5] Retrofit dual output to existing NRPZS tools — update `_nrpzs_search()`, `_nrpzs_get()` in `src/czechmedmcp/czech/nrpzs/search.py` to use `format_czech_response()`
-- [ ] T052 [US5] Implement `_get_codebooks(codebook_type: str) -> str` in `src/czechmedmcp/czech/nrpzs/search.py` — load NRPZS CSV, extract unique sorted values from `ZZ_obor_pece`/`ZZ_forma_pece`/`ZZ_druh_pece` based on type, return via `format_czech_response()`
-- [ ] T053 [US5] Register `czechmed_get_codebooks` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/nrpzs-tools.md
-- [ ] T054 [US5] Create `ReferralResult` model in `src/czechmedmcp/czech/nrpzs/models.py` per data-model.md
-- [ ] T055 [US5] Create `src/czechmedmcp/czech/workflows/referral_assistant.py` with `_referral_assistant(diagnosis_code: str, city: str, max_providers: int) -> str` — get diagnosis detail → map chapter/block to specialty via mapping table in constants → search NRPZS by city+specialty, return via `format_czech_response()`
-- [ ] T056 [US5] Register `czechmed_referral_assistant` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
-- [ ] T057 [P] [US5] Unit test for codebooks in `tests/czech/test_nrpzs_codebooks.py` — mock CSV, verify extraction of unique specialties/care_forms/care_types
-- [ ] T058 [P] [US5] Unit test for workflow in `tests/czech/test_workflow_referral.py` — mock MKN detail + NRPZS search, verify specialty mapping, verify graceful degradation
-- [ ] T059 [US5] Update tool counts: `test_tool_registration.py` 19→21, `test_mcp_integration.py` 56→58 (37+21)
+- [x] T050 [P] [US5] Create `CodebookItem` and `Codebook` models in `src/czechmedmcp/czech/nrpzs/models.py` per data-model.md
+- [x] T051 [P] [US5] Retrofit dual output to existing NRPZS tools — update `_nrpzs_search()`, `_nrpzs_get()` in `src/czechmedmcp/czech/nrpzs/search.py` to use `format_czech_response()`
+- [x] T052 [US5] Implement `_get_codebooks(codebook_type: str) -> str` in `src/czechmedmcp/czech/nrpzs/search.py` — load NRPZS CSV, extract unique sorted values from `ZZ_obor_pece`/`ZZ_forma_pece`/`ZZ_druh_pece` based on type, return via `format_czech_response()`
+- [x] T053 [US5] Register `czechmed_get_codebooks` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/nrpzs-tools.md
+- [x] T054 [US5] Create `ReferralResult` model in `src/czechmedmcp/czech/nrpzs/models.py` per data-model.md
+- [x] T055 [US5] Create `src/czechmedmcp/czech/workflows/referral_assistant.py` with `_referral_assistant(diagnosis_code: str, city: str, max_providers: int) -> str` — get diagnosis detail → map chapter/block to specialty via mapping table in constants → search NRPZS by city+specialty, return via `format_czech_response()`
+- [x] T056 [US5] Register `czechmed_referral_assistant` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
+- [x] T057 [P] [US5] Unit test for codebooks in `tests/czech/test_nrpzs_codebooks.py` — mock CSV, verify extraction of unique specialties/care_forms/care_types
+- [x] T058 [P] [US5] Unit test for workflow in `tests/czech/test_workflow_referral.py` — mock MKN detail + NRPZS search, verify specialty mapping, verify graceful degradation
+- [x] T059 [US5] Update tool counts: `test_tool_registration.py` 19→21, `test_mcp_integration.py` 56→58 (37+21)
 
 **Checkpoint**: US5 complete — NRPZS providers + codebooks + referral assistant workflow functional
 
@@ -201,11 +201,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T060 [P] [US3] Create `DrugProfileSection` and `DrugProfile` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
-- [ ] T061 [US3] Create `src/czechmedmcp/czech/workflows/drug_profile.py` with `_drug_profile(query: str) -> str` — search drug → extract sukl_code → `asyncio.gather(detail, availability, reimbursement, PubMed via from czechmedmcp.articles.search import _article_searcher, return_exceptions=True)` → assemble sections with status per contracts/workflow-tools.md, return via `format_czech_response()`
-- [ ] T062 [US3] Register `czechmed_drug_profile` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
-- [ ] T063 [P] [US3] Unit test in `tests/czech/test_workflow_drug.py` — mock all 4 sub-calls, verify parallel execution, verify graceful degradation (1 source fails → 3 sections OK + 1 error), verify all-fail scenario
-- [ ] T064 [US3] Update tool counts: `test_tool_registration.py` 21→22, `test_mcp_integration.py` 58→59 (37+22)
+- [x] T060 [P] [US3] Create `DrugProfileSection` and `DrugProfile` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
+- [x] T061 [US3] Create `src/czechmedmcp/czech/workflows/drug_profile.py` with `_drug_profile(query: str) -> str` — search drug → extract sukl_code → `asyncio.gather(detail, availability, reimbursement, PubMed via from czechmedmcp.articles.search import _article_searcher, return_exceptions=True)` → assemble sections with status per contracts/workflow-tools.md, return via `format_czech_response()`
+- [x] T062 [US3] Register `czechmed_drug_profile` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/workflow-tools.md
+- [x] T063 [P] [US3] Unit test in `tests/czech/test_workflow_drug.py` — mock all 4 sub-calls, verify parallel execution, verify graceful degradation (1 source fails → 3 sections OK + 1 error), verify all-fail scenario
+- [x] T064 [US3] Update tool counts: `test_tool_registration.py` 21→22, `test_mcp_integration.py` 58→59 (37+22)
 
 **Checkpoint**: US3 complete — drug profile workflow functional with graceful degradation
 
@@ -219,11 +219,11 @@
 
 ### Implementation for User Story 9
 
-- [ ] T065 [P] [US9] Create `Pharmacy` and `PharmacySearchResult` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
-- [ ] T066 [US9] Implement `_find_pharmacies(city, postal_code, nonstop_only, page, page_size) -> str` in `src/czechmedmcp/czech/sukl/search.py` — fetch pharmacy list from SÚKL API, filter by city/postal_code/nonstop, paginate with `compute_skip()`, return via `format_czech_response()`
-- [ ] T067 [US9] Register `czechmed_find_pharmacies` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/sukl-tools.md, validate at least city or postal_code provided
-- [ ] T068 [P] [US9] Unit test in `tests/czech/test_sukl_pharmacies.py` — mock SÚKL pharmacy API, verify city filter, nonstop filter, missing city+postal_code validation error
-- [ ] T069 [US9] Update tool counts: `test_tool_registration.py` 22→23, `test_mcp_integration.py` 59→60 (37+23)
+- [x] T065 [P] [US9] Create `Pharmacy` and `PharmacySearchResult` models in `src/czechmedmcp/czech/sukl/models.py` per data-model.md
+- [x] T066 [US9] Implement `_find_pharmacies(city, postal_code, nonstop_only, page, page_size) -> str` in `src/czechmedmcp/czech/sukl/search.py` — fetch pharmacy list from SÚKL API, filter by city/postal_code/nonstop, paginate with `compute_skip()`, return via `format_czech_response()`
+- [x] T067 [US9] Register `czechmed_find_pharmacies` in `src/czechmedmcp/czech/czech_tools.py` — signature per contracts/sukl-tools.md, validate at least city or postal_code provided
+- [x] T068 [P] [US9] Unit test in `tests/czech/test_sukl_pharmacies.py` — mock SÚKL pharmacy API, verify city filter, nonstop filter, missing city+postal_code validation error
+- [x] T069 [US9] Update tool counts: `test_tool_registration.py` 22→23, `test_mcp_integration.py` 59→60 (37+23)
 
 **Checkpoint**: US9 complete — pharmacy search functional. Total: 60 tools (37 BioMCP + 23 Czech). ✓
 
@@ -233,20 +233,20 @@
 
 **Purpose**: Final validation, documentation, integration tests
 
-- [ ] T070 Verify final tool count — run `uv run python -m pytest tests/tdd/test_mcp_integration.py -v` and ensure exactly 60 tools registered (37 BioMCP + 23 Czech)
-- [ ] T071 Verify Czech tool count — run `uv run python -m pytest tests/czech/test_tool_registration.py -v` and ensure exactly 23 Czech tools
-- [ ] T072 [P] Update `CLAUDE.md` — change tool count from 51 to 60, add 9 new Czech tools to architecture section, update `czech_tools.py` description from 14 to 23 tools
-- [ ] T073 [P] Update `README.md` — add new Czech tools to feature list, update total tool count
-- [ ] T074 [P] Register new endpoints in `src/czechmedmcp/utils/endpoint_registry.py` — SÚKL reimbursement, SUKL pharmacy, NZIP stats, VZP drug pricing
+- [x] T070 Verify final tool count — run `uv run python -m pytest tests/tdd/test_mcp_integration.py -v` and ensure exactly 60 tools registered (37 BioMCP + 23 Czech)
+- [x] T071 Verify Czech tool count — run `uv run python -m pytest tests/czech/test_tool_registration.py -v` and ensure exactly 23 Czech tools
+- [x] T072 [P] Update `CLAUDE.md` — change tool count from 51 to 60, add 9 new Czech tools to architecture section, update `czech_tools.py` description from 14 to 23 tools
+- [x] T073 [P] Update `README.md` — add new Czech tools to feature list, update total tool count
+- [x] T074 [P] Register new endpoints in `src/czechmedmcp/utils/endpoint_registry.py` — SÚKL reimbursement, SUKL pharmacy, NZIP stats, VZP drug pricing
 - [ ] T075 [P] Update `THIRD_PARTY_ENDPOINTS.md` — document all new external API endpoints with URLs, rate limits, data types
-- [ ] T076 Run full test suite: `uv run python -m pytest -x --ff -n auto --dist loadscope`
-- [ ] T077 Run lint + type check: `uv run ruff check src tests && uv run mypy`
-- [ ] T078 [P] Create integration tests in `tests/czech_integration/test_new_tools_api.py` — live API tests for reimbursement, pharmacy, stats (all marked `@pytest.mark.integration`)
+- [x] T076 Run full test suite: `uv run python -m pytest -x --ff -n auto --dist loadscope`
+- [x] T077 Run lint + type check: `uv run ruff check src tests && uv run mypy`
+- [x] T078 [P] Create integration tests in `tests/czech_integration/test_new_tools_api.py` — live API tests for reimbursement, pharmacy, stats (all marked `@pytest.mark.integration`)
 - [ ] T079 Run quickstart.md validation — follow quickstart.md steps end-to-end, verify all phases work
-- [ ] T080 [P] Performance benchmark: verify SC-002 (SÚKL search <2s), SC-005 (MKN-10 offline <100ms), SC-006 (SZV offline <100ms) in `tests/czech_integration/test_performance.py` — timed assertions with `@pytest.mark.integration`
+- [x] T080 [P] Performance benchmark: verify SC-002 (SÚKL search <2s), SC-005 (MKN-10 offline <100ms), SC-006 (SZV offline <100ms) in `tests/czech_integration/test_performance.py` — timed assertions with `@pytest.mark.integration`
 - [ ] T081 [P] Performance benchmark: verify SC-003 (batch 50 drugs <10s), SC-004 (drug profile workflow <10s) in `tests/czech_integration/test_performance.py` — timed assertions with `@pytest.mark.integration`
-- [ ] T082 [P] Verify FR-026 diacritics: add test in `tests/czech/test_diacritics_new_tools.py` — search "léčivo" vs "lecivo" returns identical results for all new search tools (reimbursement, pharmacies, codebooks)
-- [ ] T083 [P] Verify FR-027 caching: add test in `tests/czech/test_cache_config.py` — verify cache TTL configuration for all new endpoints (SÚKL reimbursement, NZIP stats, VZP pricing, pharmacy API)
+- [x] T082 [P] Verify FR-026 diacritics: add test in `tests/czech/test_diacritics_new_tools.py` — search "léčivo" vs "lecivo" returns identical results for all new search tools (reimbursement, pharmacies, codebooks)
+- [x] T083 [P] Verify FR-027 caching: add test in `tests/czech/test_cache_config.py` — verify cache TTL configuration for all new endpoints (SÚKL reimbursement, NZIP stats, VZP pricing, pharmacy API)
 
 **Checkpoint**: All 23 Czech tools implemented, tested, documented. Total: 60 tools (37 BioMCP + 23 Czech). Performance validated. Ready for deployment.
 
