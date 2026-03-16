@@ -7,9 +7,9 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "dev:web": "turbo dev --filter=web",
-    "dev:docs": "turbo dev --filter=docs",
+    "dev:docs": "turbo dev --filter=czechmedmcp-docs",
     "build:web": "turbo build --filter=web",
-    "build:docs": "turbo build --filter=docs"
+    "build:docs": "turbo build --filter=czechmedmcp-docs"
   },
   "devDependencies": {
     "turbo": "^2"

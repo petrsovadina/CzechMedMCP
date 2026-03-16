@@ -19,7 +19,7 @@ Follow-up TODOs:
   - Verify NRPZS, SZV/NZIP, VZP API status and decide retain/remove
 -->
 
-# BioMCP Constitution
+# CzechMedMCP Constitution
 
 ## Core Principles
 
@@ -31,7 +31,7 @@ contract. All tools MUST follow MCP input/output conventions and MUST be
 registered through the MCP server. New functionality that cannot be
 expressed as an MCP tool MUST be justified in writing before implementation.
 
-**Rationale**: BioMCP exists to bridge AI assistants and biomedical data.
+**Rationale**: CzechMedMCP exists to bridge AI assistants and biomedical data.
 MCP compliance ensures interoperability with any MCP-compatible client
 (Claude Desktop, agents, third-party integrations).
 
@@ -55,7 +55,7 @@ locale-specific modules while maintaining the same isolation guarantees.
 
 ### III. Authoritative Data Sources
 
-BioMCP MUST integrate only with established, authoritative biomedical
+CzechMedMCP MUST integrate only with established, authoritative biomedical
 and healthcare databases and APIs:
 
 - **Global**: PubMed, ClinicalTrials.gov, NCI, MyVariant.info,
@@ -67,7 +67,7 @@ and healthcare databases and APIs:
 
 Every external API endpoint MUST be documented in
 `THIRD_PARTY_ENDPOINTS.md`. Data returned to the user MUST be attributed
-to its source. BioMCP MUST NOT fabricate, interpolate, or infer
+to its source. CzechMedMCP MUST NOT fabricate, interpolate, or infer
 biomedical data that is not present in the source response.
 
 When an external API becomes non-functional (returns persistent 404 or
@@ -103,7 +103,7 @@ is REQUIRED for unit tests. The test directory structure MUST mirror the
 source structure under `tests/`. CI MUST pass all unit tests; integration
 test failures MUST NOT block the build.
 
-**Rationale**: BioMCP depends on numerous external APIs that are outside
+**Rationale**: CzechMedMCP depends on numerous external APIs that are outside
 our control. Separating unit and integration tests ensures fast,
 reliable CI while still validating real API behavior in dedicated runs.
 
