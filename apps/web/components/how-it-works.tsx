@@ -5,7 +5,7 @@ const steps = [
     num: '01',
     title: 'Instalace',
     desc: 'Jeden příkaz a MCP server je připraven.',
-    code: 'pip install czechmedmcp',
+    code: 'uv tool install czechmedmcp',
   },
   {
     num: '02',
