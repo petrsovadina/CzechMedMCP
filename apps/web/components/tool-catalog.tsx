@@ -21,7 +21,7 @@ const groupColors: Record<string, string> = {
   'NRPZS': 'bg-violet-100 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-500/20',
   'SZV': 'bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
   'Workflow': 'bg-rose-100 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
-  'Global': 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/50 border-gray-200 dark:border-white/10',
+  'Global': 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/50 border-gray-200 dark:border-white/10',
 }
 
 export function ToolCatalog() {
@@ -32,7 +32,7 @@ export function ToolCatalog() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
             Ukázka nástrojů
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-500 dark:text-white/50">
+          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-white/50">
             12 z 60 dostupných nástrojů. Každý přijímá strukturované parametry
             a vrací formátovaný markdown.
           </p>
@@ -52,7 +52,7 @@ export function ToolCatalog() {
                   {t.group}
                 </span>
               </div>
-              <p className="mt-2 text-xs text-gray-400 dark:text-white/40">{t.desc}</p>
+              <p className="mt-2 text-xs text-gray-500 dark:text-white/40">{t.desc}</p>
             </FadeIn>
           ))}
         </div>

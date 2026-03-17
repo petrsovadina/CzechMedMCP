@@ -44,7 +44,7 @@ export function HowItWorks() {
               </div>
               <div className="pb-8">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{s.title}</h3>
-                <p className="mt-2 text-gray-500 dark:text-white/50">{s.desc}</p>
+                <p className="mt-2 text-gray-600 dark:text-white/50">{s.desc}</p>
                 <div className="mt-4 overflow-x-auto rounded-lg bg-gray-100 dark:bg-white/[0.04] px-4 py-3 font-mono text-sm text-emerald-400">
                   {s.code}
                 </div>

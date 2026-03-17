@@ -53,7 +53,7 @@ export function Features() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
             60 nástrojů v jednom serveru
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-500 dark:text-white/50">
+          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-white/50">
             České zdravotnické registry i světové biomedicínské databáze —
             vše přístupné přes Model Context Protocol.
           </p>
@@ -70,8 +70,8 @@ export function Features() {
                 {f.icon}
               </div>
               <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-white/50">{f.desc}</p>
-              <span className="mt-4 inline-block text-xs font-medium text-gray-400 dark:text-white/30">
+              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-white/50">{f.desc}</p>
+              <span className="mt-4 inline-block text-xs font-medium text-gray-500 dark:text-white/30">
                 {f.count}
               </span>
             </FadeIn>

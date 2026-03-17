@@ -13,7 +13,7 @@ export function CTA() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-5xl">
             Připraveni začít?
           </h2>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-gray-400 dark:text-white/50">
+          <p className="mx-auto mt-6 max-w-xl text-lg text-gray-500 dark:text-white/50">
             Jeden příkaz. Dva minuty. 60 nástrojů pro AI asistenta vašich
             lékařů.
           </p>

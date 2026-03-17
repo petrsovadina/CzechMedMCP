@@ -27,7 +27,7 @@ export function ProblemSolution() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
             Problém → Řešení
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-500 dark:text-white/50">
+          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-white/50">
             AI asistenti jsou mocní, ale bez přístupu k českým zdravotnickým
             datům jsou slepí. CzechMedMCP jim dává oči.
           </p>
@@ -40,7 +40,7 @@ export function ProblemSolution() {
               delay={i * 0.1}
               className="rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.03] p-6"
             >
-              <p className="text-gray-400 dark:text-white/40 line-through decoration-red-500 dark:decoration-red-400/50">
+              <p className="text-gray-500 dark:text-white/40 line-through decoration-red-500/70 dark:decoration-red-400/50">
                 {item.problem}
               </p>
               <p className="mt-3 font-semibold text-gray-900 dark:text-white">

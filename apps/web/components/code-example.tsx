@@ -8,7 +8,7 @@ export function CodeExample() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
             Jak to vypadá v praxi
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-500 dark:text-white/50">
+          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-white/50">
             Přirozený dialog s AI — CzechMedMCP pracuje na pozadí.
           </p>
         </FadeIn>
@@ -16,7 +16,7 @@ export function CodeExample() {
         <FadeIn delay={0.2} className="mx-auto mt-16 max-w-3xl">
           <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.03] backdrop-blur-sm">
             <div className="border-b border-gray-200 dark:border-white/[0.06] px-6 py-4">
-              <span className="text-sm font-medium text-gray-500 dark:text-white/60">
+              <span className="text-sm font-medium text-gray-600 dark:text-white/60">
                 Claude Desktop + CzechMedMCP
               </span>
             </div>
@@ -41,7 +41,7 @@ export function CodeExample() {
                     <div className="inline-block rounded-lg bg-white/[0.05] px-3 py-1 font-mono text-xs text-emerald-400">
                       czechmed_compare_alternatives(atc_code=&quot;A10BA02&quot;)
                     </div>
-                    <div className="max-w-lg rounded-2xl rounded-bl-md bg-white/[0.06] px-4 py-3 text-sm leading-relaxed text-gray-700 dark:text-white/80">
+                    <div className="max-w-lg rounded-2xl rounded-bl-md bg-white/[0.06] px-4 py-3 text-sm leading-relaxed text-gray-800 dark:text-white/80">
                       <p className="font-semibold text-gray-900 dark:text-white">Metformin — přehled</p>
                       <p className="mt-2">Nalezeno 12 přípravků s metforminem. Přípravek <strong>Metformin Teva 1000 mg</strong> (SUKL: 0012345) je aktuálně <span className="text-emerald-400">dostupný</span>.</p>
                       <p className="mt-2">Doplatek: <strong>0 Kč</strong> (plně hrazeno).</p>

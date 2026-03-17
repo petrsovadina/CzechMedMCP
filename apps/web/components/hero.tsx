@@ -43,7 +43,7 @@ export function Hero() {
         </h1>
 
         <p
-          className="hero-animate mx-auto mt-8 max-w-xl text-lg leading-relaxed font-light tracking-wide text-gray-400 dark:text-white/40 md:text-xl"
+          className="hero-animate mx-auto mt-8 max-w-xl text-lg leading-relaxed font-light tracking-wide text-gray-500 dark:text-white/40 md:text-xl"
           style={{ animationDelay: '0.5s' }}
         >
           CzechMedMCP propojuje Claude, Cursor a další AI asistenty s SUKL,

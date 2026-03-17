@@ -16,12 +16,12 @@ export function Testimonial() {
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
               Čísla, která mluví
             </h2>
-            <p className="mt-4 text-gray-500 dark:text-white/50 leading-relaxed">
+            <p className="mt-4 text-gray-600 dark:text-white/50 leading-relaxed">
               CzechMedMCP propojuje české zdravotnické registry se světovými
               biomedicínskými databázemi. Vše přístupné přes jeden MCP server —
               bez API klíčů, bez složité konfigurace.
             </p>
-            <p className="mt-4 text-gray-500 dark:text-white/50 leading-relaxed">
+            <p className="mt-4 text-gray-600 dark:text-white/50 leading-relaxed">
               Postaveno pro platformu{' '}
               <a
                 href="https://medevio.com"
@@ -46,7 +46,7 @@ export function Testimonial() {
                 <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 md:text-4xl">
                   {s.value}
                 </div>
-                <div className="mt-2 text-sm text-gray-400 dark:text-white/40">
+                <div className="mt-2 text-sm text-gray-500 dark:text-white/40">
                   {s.label}
                 </div>
               </FadeIn>

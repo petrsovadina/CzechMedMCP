@@ -26,7 +26,7 @@ export function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm text-gray-400 dark:text-white/50 transition hover:text-gray-900 dark:hover:text-white"
+              className="text-sm text-gray-500 dark:text-white/50 transition hover:text-gray-900 dark:hover:text-white"
             >
               {l.label}
             </a>
@@ -64,7 +64,7 @@ export function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="block py-2 text-sm text-gray-400 dark:text-white/50 transition hover:text-gray-900 dark:hover:text-white"
+              className="block py-2 text-sm text-gray-500 dark:text-white/50 transition hover:text-gray-900 dark:hover:text-white"
             >
               {l.label}
             </a>

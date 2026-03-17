@@ -8,12 +8,12 @@ export function Footer() {
               <span className="text-blue-600 dark:text-blue-400">Czech</span>Med
               <span className="text-blue-600 dark:text-blue-400">MCP</span>
             </span>
-            <p className="mt-1 text-sm text-gray-400 dark:text-white/40">
+            <p className="mt-1 text-sm text-gray-500 dark:text-white/40">
               Open source MCP server pro české zdravotnictví
             </p>
           </div>
 
-          <div className="flex gap-8 text-sm text-gray-400 dark:text-white/40">
+          <div className="flex gap-8 text-sm text-gray-500 dark:text-white/40">
             <a href="https://czech-med-mcp-docs.vercel.app" className="transition hover:text-gray-900 dark:hover:text-white">
               Dokumentace
             </a>
@@ -44,7 +44,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-200 dark:border-white/[0.06] pt-8 text-center text-xs text-gray-400 dark:text-white/30">
+        <div className="mt-8 border-t border-gray-200 dark:border-white/[0.06] pt-8 text-center text-xs text-gray-500 dark:text-white/30">
           MIT {new Date().getFullYear()} &copy;{' '}
           <a
             href="https://github.com/petrsovadina"
