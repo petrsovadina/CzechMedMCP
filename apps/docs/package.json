@@ -11,6 +11,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@napi-rs/simple-git-linux-x64-gnu": "0.1.19",
     "next": "^15.5.12",
     "nextra": "^4.6.1",
     "nextra-theme-docs": "^4.6.1",
