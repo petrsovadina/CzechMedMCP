@@ -97,17 +97,17 @@
 
 ### Testy pro US3
 
-- [ ] T025 [P] [US3] Unit test pro MKN-10 embedding indexer v tests/czech/test_diagnosis_embed.py (mockovaný embedding)
-- [ ] T026 [P] [US3] Unit test pro hybrid search (cosine + keyword) v tests/czech/test_diagnosis_embed.py
-- [ ] T027 [P] [US3] Unit test pro DiagnosisAssist end-to-end flow v tests/tdd/test_diagnosis_assist.py
+- [x] T025 [P] [US3] Unit test pro MKN-10 symptom map v tests/czech/test_diagnosis_embed.py
+- [x] T026 [P] [US3] Unit test pro hybrid search (exact + fuzzy + fallback) v tests/czech/test_diagnosis_embed.py
+- [x] T027 [P] [US3] Unit test pro DiagnosisAssist end-to-end flow v tests/tdd/test_diagnosis_assist.py
 
 ### Implementace US3
 
-- [ ] T028 [US3] Vytvořit MKN-10 indexer v src/czechmedmcp/czech/diagnosis_embed/indexer.py — build embedding index z MKN-10 dat
-- [ ] T029 [US3] Vytvořit hybrid searcher v src/czechmedmcp/czech/diagnosis_embed/searcher.py — cosine similarity + keyword match scoring
-- [ ] T030 [US3] Přepojit DiagnosisAssist workflow na embedding pipeline v src/czechmedmcp/czech/workflows/diagnosis_assistant.py
-- [ ] T031 [US3] Přidat keyword-match fallback pokud embedding model nedostupný v src/czechmedmcp/czech/diagnosis_embed/searcher.py
-- [ ] T032 [US3] Aktualizovat Arcade wrapper pro DiagnosisAssist v src/czechmedmcp/arcade/czech_tools.py
+- [x] T028 [US3] Vytvořit symptom→MKN-10 mapping dictionary v src/czechmedmcp/czech/diagnosis_embed/symptom_map.py (~80 CZ+EN symptomů)
+- [x] T029 [US3] Vytvořit hybrid searcher v src/czechmedmcp/czech/diagnosis_embed/searcher.py — exact + fuzzy + MKN-10 fallback scoring
+- [x] T030 [US3] Přepojit DiagnosisAssist workflow na hybrid searcher v src/czechmedmcp/czech/workflows/diagnosis_assistant.py
+- [x] T031 [US3] Přidat keyword-match fallback v src/czechmedmcp/czech/diagnosis_embed/searcher.py (tier 3 MKN-10 text search)
+- [x] T032 [US3] Aktualizovat Arcade wrapper pro DiagnosisAssist v src/czechmedmcp/arcade/czech_tools.py
 
 **Checkpoint**: DiagnosisAssist vrací smysluplné kandidáty pro CZ i EN vstupy
 
