@@ -86,6 +86,7 @@ def _patch_all(
     composition=None,
     doc_meta=None,
     substance_resp=None,
+    url_reachable=False,
 ):
     """Return a context manager patching all external calls."""
     if composition is None:
@@ -123,6 +124,11 @@ def _patch_all(
                         if isinstance(substance_resp, dict)
                         else substance_resp
                     ),
+                ),
+                patch(
+                    f"{mod}._url_is_reachable",
+                    new_callable=AsyncMock,
+                    return_value=url_reachable,
                 ),
             ]
             for p in self_._patches:

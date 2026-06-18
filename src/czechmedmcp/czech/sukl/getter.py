@@ -145,14 +145,34 @@ def _build_doc_url(
 
 
 async def _url_is_reachable(url: str) -> bool:
-    """Check if a URL returns 200 via HEAD request."""
+    """Check if a URL returns 2xx via HEAD or GET request.
+
+    Falls back to GET if HEAD fails, as some servers don't
+    support HEAD requests.
+    """
+    def _is_success_response(resp: httpx.Response) -> bool:
+        status_code = getattr(resp, "status_code", None)
+        return isinstance(status_code, int) and status_code < 400
+
     try:
         async with httpx.AsyncClient(
             timeout=SUKL_HTTP_TIMEOUT
         ) as client:
-            resp = await client.head(url)
-            return resp.status_code == 200
-    except httpx.HTTPError:
+            try:
+                resp = await client.head(url)
+                if _is_success_response(resp):
+                    return True
+            except httpx.HTTPError:
+                pass
+            resp = await client.get(url)
+            return _is_success_response(resp)
+    except httpx.HTTPError as e:
+        logger.debug(
+            "URL not reachable %s: %s (%s)",
+            url,
+            type(e).__name__,
+            str(e),
+        )
         return False
 
 
@@ -517,7 +537,16 @@ async def _sukl_document_getter(
     )
     name = detail.get("nazev", "")
 
-    if not doc_meta:
+    doc_url = _build_doc_url(sukl_code, doc_type)
+
+    # Fallback: try direct document URL even if metadata endpoint returns nothing.
+    if not doc_meta and not await _url_is_reachable(doc_url):
+        logger.warning(
+            "Document not found for %s via %s "
+            "(metadata empty, URL unreachable)",
+            sukl_code,
+            doc_url,
+        )
         return json.dumps(
             {
                 "error": (
@@ -527,11 +556,11 @@ async def _sukl_document_getter(
                 "sukl_code": sukl_code,
                 "name": name,
                 "source": "SUKL",
+                "doc_url": doc_url,
             },
             ensure_ascii=False,
         )
 
-    doc_url = _build_doc_url(sukl_code, doc_type)
     sections = await _scrape_document(
         doc_url, doc_type
     )
