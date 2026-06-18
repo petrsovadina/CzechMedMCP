@@ -6,7 +6,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import pytest
 
-
 # -- Fixtures ------------------------------------------------
 
 
@@ -429,6 +428,37 @@ class TestUrlIsReachable:
         ):
             assert not await _url_is_reachable(
                 "http://example.com/nope"
+            )
+
+    async def test_falls_back_to_get_on_head_405(self):
+        from czechmedmcp.czech.sukl.getter import (
+            _url_is_reachable,
+        )
+
+        mock_client = AsyncMock()
+        mock_client.head.return_value = _mock_response(
+            status_code=405
+        )
+        mock_client.get.return_value = _mock_response(
+            status_code=200
+        )
+        mock_client.__aenter__ = AsyncMock(
+            return_value=mock_client
+        )
+        mock_client.__aexit__ = AsyncMock(
+            return_value=False
+        )
+
+        with patch(
+            "czechmedmcp.czech.sukl.getter"
+            ".httpx.AsyncClient",
+            return_value=mock_client,
+        ):
+            assert await _url_is_reachable(
+                "http://example.com/doc"
+            )
+            mock_client.get.assert_called_once_with(
+                "http://example.com/doc"
             )
 
     async def test_returns_false_on_http_error(self):

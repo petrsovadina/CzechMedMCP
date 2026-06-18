@@ -66,9 +66,12 @@ async def fetch_drug_detail(
                 return None
             resp.raise_for_status()
             data = resp.json()
-    except httpx.HTTPError:
+    except httpx.HTTPError as e:
         logger.warning(
-            "Failed to fetch drug detail for %s", sukl_code
+            "Failed to fetch drug detail for %s: %s (%s)",
+            sukl_code,
+            type(e).__name__,
+            str(e),
         )
         return None
 
