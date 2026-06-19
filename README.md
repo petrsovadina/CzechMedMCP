@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/petrsovadina-czechmedmcp-badge.png)](https://mseep.ai/app/petrsovadina-czechmedmcp)
+
 # CzechMedMCP: AI napojení na české zdravotnictví
 
 Open source MCP server se **60 nástroji** pro české i globální zdravotnické zdroje. Propojuje Claude, Cursor a další AI asistenty s SUKL, MKN-10, PubMed a dalšími databázemi.
