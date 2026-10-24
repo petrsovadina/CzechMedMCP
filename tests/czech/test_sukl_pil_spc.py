@@ -80,6 +80,12 @@ class MockClient:
                 return resp
         return MockResp(ok=False)
 
+    async def head(self, url, **kw):
+        for pattern, resp in self._responses.items():
+            if pattern in url:
+                return resp
+        return MockResp(ok=False)
+
 
 def _make_client(
     detail=MOCK_DETAIL,
@@ -195,12 +201,42 @@ class TestPILGetter:
         assert sc["url"] != ""
 
     async def test_no_doc_available(self):
-        """Should return error when no PIL exists."""
-        with _mock_env(doc_meta=[]):
+        """Should return error only when URL is unreachable."""
+        # Create a mock where both metadata AND direct URL are unavailable
+        client = MockClient({
+            "lecive-pripravky": MockResp(
+                data=MOCK_DETAIL, ok=True
+            ),
+            "dokumenty-metadata": MockResp(
+                data=[], ok=False
+            ),
+            "dokumenty/": MockResp(ok=False),
+        })
+        with _mock_env(client=client):
             result = await _sukl_pil_getter("0012345")
 
         parsed = json.loads(result)
         assert "error" in parsed
+        assert "not available" in parsed["error"]
+
+    async def test_fallback_on_no_metadata(self):
+        """Should fetch document from direct URL when metadata missing."""
+        # Metadata endpoint returns empty, but direct URL works
+        client = MockClient({
+            "lecive-pripravky": MockResp(
+                data=MOCK_DETAIL, ok=True
+            ),
+            "dokumenty-metadata": MockResp(
+                data=[], ok=False
+            ),
+            "dokumenty/": MockResp(html=MOCK_PIL_HTML, ok=True),
+        })
+        with _mock_env(client=client):
+            result = await _sukl_pil_getter("0012345")
+
+        parsed = json.loads(result)
+        assert "content" in parsed
+        assert "error" not in parsed
 
 
 class TestSPCGetter:
